@@ -15,6 +15,9 @@ const CEDOC           = lazy(() => import('./pages/CEDOC.jsx'))
 const Contacto        = lazy(() => import('./pages/Contacto.jsx'))
 const Tienda          = lazy(() => import('./pages/Tienda.jsx'))
 const Login           = lazy(() => import('./pages/Login.jsx'))
+const TestAdmin = lazy(() => import('./pages/Admin/TestAdmin.jsx'));
+const NoticiasAdmin = lazy(() => import('./pages/Admin/NoticiasAdmin.jsx'));
+const AdminLayout     = lazy(() => import('./pages/Admin/AdminLayout.jsx'))
 
 function PageLoader() {
   return (
@@ -57,6 +60,17 @@ function Layout() {
           <Route path="/contacto"           element={<Contacto />} />
           <Route path="/tienda"             element={<Tienda />} />
           <Route path="/login"              element={<Login />} />
+            <Route path="/admin" element={
+                <AdminLayout>
+                    <TestAdmin />
+                </AdminLayout>
+            } />
+
+            <Route path="/admin/noticias" element={
+                <AdminLayout>
+                    <NoticiasAdmin />
+                </AdminLayout>
+            } />
           <Route path="*" element={
             <div style={{ textAlign: 'center', padding: '6rem 2rem' }}>
               <div style={{ fontSize: '5rem' }}>🎭</div>

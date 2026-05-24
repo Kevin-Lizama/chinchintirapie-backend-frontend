@@ -1,0 +1,79 @@
+.admin-layout {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.admin-content {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+    padding: 2rem;
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 0; /* 👈 fix clave en flex: evita que el hijo desborde */
+}
+
+.admin-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: none;
+    background: white;
+    padding: 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    align-items: stretch;
+    box-sizing: border-box;
+}
+
+.admin-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: bold;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.admin-subtitle {
+    color: #6b7280;
+    font-size: 1rem;
+}
+
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    width: 100%;
+    flex: 1;
+}
+
+.admin-form input,
+.admin-form textarea {
+    width: 100%;
+    max-width: 100%;
+    display: block;
+    padding: 14px;
+    font-size: 17px;
+    box-sizing: border-box;
+}
+
+.admin-form textarea {
+    height: 250px;
+    resize: none;
+}
+
+.admin-form button {
+    background-color: var(--morado-o);
+    color: white;
+    padding: 0.7rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: bold;
+}
+
+.admin-form button:hover {
+    background-color: var(--purpura);
+}
