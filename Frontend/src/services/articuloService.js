@@ -1,8 +1,16 @@
 // En desarrollo usa el proxy de vite.config.js ('/api')
 // En producción usará la URL del backend
-const API_BASE = import.meta.env.VITE_API_URL 
-  ? import.meta.env.VITE_API_URL.replace(/\/auth\/?$/, '') 
-  : '/api';
+let apiBase = '/api';
+if (import.meta.env.VITE_API_URL) {
+  let url = import.meta.env.VITE_API_URL.trim().replace(/\/+$/, '');
+  url = url.replace(/\/auth\/?$/, '');
+  if (!url.endsWith('/api')) {
+    apiBase = `${url}/api`;
+  } else {
+    apiBase = url;
+  }
+}
+const API_BASE = apiBase;
 
 /**
  * Servicio para artículos (Noticias y Crónicas).
