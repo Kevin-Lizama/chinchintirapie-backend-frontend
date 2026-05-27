@@ -4,7 +4,7 @@ import { useEffect } from 'react';
  * Activates IntersectionObserver-based reveal animations
  * on all elements with the `.reveal` class.
  */
-export function useReveal() {
+export function useReveal(dependencies = []) {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -19,8 +19,15 @@ export function useReveal() {
       { threshold: 0.1 }
     );
 
-    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+    // Damos un pequeñísimo retraso para asegurar que el DOM ya pintó los elementos dinámicos
+    const timer = setTimeout(() => {
+      document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+    }, 50);
 
-    return () => observer.disconnect();
-  }, []);
+    return () => {
+      clearTimeout(timer);
+      observer.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, dependencies);
 }
