@@ -5,9 +5,10 @@ function AdminList({ tipo }) {
 
     const location = useLocation();
 
+    // eslint-disable-next-line no-unused-vars
     const esEditar = location.pathname.includes('editar');
+    // eslint-disable-next-line no-unused-vars
     const esEliminar = location.pathname.includes('eliminar');
-
     // 🔥 Datos iniciales por tipo (mock)
     const initialData = {
         noticias: [

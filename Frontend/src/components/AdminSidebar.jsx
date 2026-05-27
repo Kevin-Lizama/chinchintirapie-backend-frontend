@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { NavLink, useLocation } from 'react-router-dom';
 import '../styles/AdminSideBar.css';
 import { useState, useEffect } from 'react';

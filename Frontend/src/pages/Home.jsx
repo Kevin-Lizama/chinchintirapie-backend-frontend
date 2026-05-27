@@ -46,12 +46,6 @@ const TALLERES = [
   { img: '/img/Taller-card-figurines.webp', title: 'Figurines', desc: 'Diseño y creación de vestuarios, accesorios y personajes para presentaciones carnavaleras.' },
 ];
 
-const EVENTOS = [
-  { fecha: '19 hrs',  nombre: 'Ensayo General – Nono 380' },
-  { fecha: '23 Feb',  nombre: 'Desfile de Carnaval – Nono 380' },
-  { fecha: '23 Mar',  nombre: 'Cierre de Temporada – Nono 380' },
-];
-
 export default function Home() {
   useReveal();
 

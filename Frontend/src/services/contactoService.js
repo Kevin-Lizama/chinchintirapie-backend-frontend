@@ -32,7 +32,7 @@ const contactoService = {
     });
 
     const contentType = response.headers.get('content-type');
-    let data = {};
+    let data;
     
     if (contentType && contentType.includes('application/json')) {
       data = await response.json();
