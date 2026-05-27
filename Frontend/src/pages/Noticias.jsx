@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Ticker from '../components/Ticker';
 import { Link } from 'react-router-dom';
-import { NEWS_ITEMS } from '../data/noticiasData';
+import { useReveal } from '../hooks/useReveal';
+import articuloService from '../services/articuloService';
 import '../styles/Noticias.css';
 
 const CAROUSEL_SLIDES = [
@@ -10,15 +11,26 @@ const CAROUSEL_SLIDES = [
   { src: '/img/img3.webp', caption: 'Aniversario Violeta Parra' },
 ];
 
-const CATEGORIES = ['Todas', 'Carnaval', 'Audiovisual', 'Talleres', 'Pedagogía', 'Eventos', 'Archivo'];
-
 export default function Noticias() {
   const [slide, setSlide] = useState(0);
-  const [filter, setFilter] = useState('Todas');
+  const [noticias, setNoticias] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  useReveal([noticias]);
 
-  const filtered = filter === 'Todas'
-    ? NEWS_ITEMS
-    : NEWS_ITEMS.filter((n) => n.category.toLowerCase() === filter.toLowerCase());
+  useEffect(() => {
+    const fetchNoticias = async () => {
+      try {
+        const data = await articuloService.fetchByType('NOTICIA');
+        setNoticias(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNoticias();
+  }, []);
 
   return (
     <>
@@ -29,13 +41,6 @@ export default function Noticias() {
           <h1>Hitos Recientes</h1>
           <p>Actividades, encuentros y memoria viva de la Escuela Carnavalera.</p>
         </div>
-        <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="noticias-filter"
-        >
-          {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
-        </select>
       </div>
 
       <div className="noticias-carousel">
@@ -64,19 +69,20 @@ export default function Noticias() {
 
       <section className="noticias-grid">
         <div className="noticias-grid-inner">
-          {filtered.map((item) => (
-            <article key={item.title} className="noticias-card">
-              {item.video ? (
-                <video autoPlay muted loop playsInline className="noticias-card-media">
-                  <source src={item.video} type="video/mp4" />
-                </video>
+          {loading && <p>Cargando noticias...</p>}
+          {error && <p className="error">{error}</p>}
+          {!loading && !error && noticias.length === 0 && <p>No hay noticias disponibles.</p>}
+          {!loading && !error && noticias.map((item) => (
+            <article key={item.id} className="noticias-card reveal">
+              {item.urlPhoto ? (
+                <img src={item.urlPhoto} alt={item.title} className="noticias-card-media" loading="lazy" />
               ) : (
-                <img src={item.img} alt={item.title} className="noticias-card-media" loading="lazy" />
+                <div className="noticias-card-media" style={{ background: 'linear-gradient(135deg, var(--rojo), var(--naranja))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem' }}>📰</div>
               )}
               <div className="noticias-card-body">
-                <span className="noticias-card-tag">{item.category}</span>
+                <span className="noticias-card-tag">Noticia</span>
                 <h3>{item.title}</h3>
-                {item.desc && <p>{item.desc}</p>}
+                {item.description && <p>{item.description}</p>}
                 <Link to={`/noticias/${item.id}`} className="link-reset">
                   <button>Ver noticia</button>
                 </Link>

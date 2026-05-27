@@ -1,20 +1,32 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useReveal } from '../hooks/useReveal';
 import PageHero from '../components/PageHero';
 import Ticker from '../components/Ticker';
-
 import { Link } from 'react-router-dom';
-import { ARTICLES, TIMELINE, DOWNLOADS, TOPICS, FILTERS, STATS } from '../data/cedocData';
+import multimediaService from '../services/multimediaService';
+import { TIMELINE, DOWNLOADS, TOPICS, STATS } from '../data/cedocData';
 import '../styles/Cedoc.css';
 
 
 export default function CEDOC() {
-  const [activeFilter, setActiveFilter] = useState('all');
-  useReveal();
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  useReveal([articles]);
 
-  const visibleArticles = activeFilter === 'all'
-    ? ARTICLES
-    : ARTICLES.filter((a) => a.tags.some((t) => t.toLowerCase() === activeFilter));
+  useEffect(() => {
+    const fetchCedoc = async () => {
+      try {
+        const data = await multimediaService.fetchByType('CEDOC');
+        setArticles(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCedoc();
+  }, []);
 
   return (
     <>
@@ -37,20 +49,6 @@ export default function CEDOC() {
         ))}
       </div>
 
-      {/* Filtros */}
-      <div className="filter-tabs">
-        {FILTERS.map((f) => (
-          <button
-            key={f}
-            className={`filter-tab${activeFilter === f ? ' active' : ''}`}
-            onClick={() => setActiveFilter(f)}
-          >
-            {f === 'all' ? 'Todos' : f === 'banda' ? '🎺 Banda' : f === 'baile' ? '💃 Baile'
-              : f === 'figura' ? '🎭 Figura' : f === 'historia' ? '📜 Historia' : '🏘️ Comunidad'}
-          </button>
-        ))}
-      </div>
-
       {/* Main Layout */}
       <main>
         <div className="cedoc-layout">
@@ -58,36 +56,27 @@ export default function CEDOC() {
           <div className="cedoc-main">
             <section>
               <h2>✦ Artículos Destacados</h2>
-              {visibleArticles.filter((a) => a.status === 'published').map((a) => (
+              {loading && <p>Cargando artículos...</p>}
+              {error && <p className="error">{error}</p>}
+              {!loading && !error && articles.length === 0 && <p>No hay artículos disponibles.</p>}
+              {!loading && !error && articles.map((a) => (
                 <Link to={`/cedoc/${a.id}`} key={a.id} className="link-reset">
                   <div className="article-card reveal">
-                    <div className="article-icon" style={a.iconStyle}>{a.icon}</div>
+                    <div className="article-icon" style={a.url ? { padding: 0, overflow: 'hidden', background: 'transparent', borderRadius: '12px' } : { background: 'linear-gradient(135deg, var(--purpura), var(--azul))' }}>
+                      {a.url ? (
+                        <img src={a.url} alt={a.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        "📚"
+                      )}
+                    </div>
                     <div className="article-body">
                       <h3>{a.title}</h3>
-                      <p>{a.desc}</p>
+                      <p>{a.description}</p>
                       <div className="article-meta">
-                        {a.tags.map((t) => <span className="meta-tag" key={t}>{t}</span>)}
+                        {a.categories && a.categories.map((t) => <span className="meta-tag" key={t}>{t}</span>)}
+                        <span className="meta-tag">CEDOC</span>
                       </div>
                       <button type="button" className="download-btn">⬇ Ver artículo completo</button>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </section>
-
-            <section>
-              <h2>🔬 Investigaciones en Curso</h2>
-              {visibleArticles.filter((a) => a.status === 'in-progress').map((a) => (
-                <Link to={`/cedoc/${a.id}`} key={a.id} className="link-reset">
-                  <div className="article-card reveal">
-                    <div className="article-icon" style={a.iconStyle}>{a.icon}</div>
-                    <div className="article-body">
-                      <h3>{a.title}</h3>
-                      <p>{a.desc}</p>
-                      <div className="article-meta">
-                        {a.tags.map((t) => <span className="meta-tag" key={t}>{t}</span>)}
-                      </div>
-                      <button type="button" className="download-btn download-btn--gold">👁 Ver avance completo</button>
                     </div>
                   </div>
                 </Link>

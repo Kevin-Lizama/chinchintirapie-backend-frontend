@@ -1,26 +1,57 @@
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { useReveal } from '../hooks/useReveal';
 import PageHero from '../components/PageHero';
 import Ticker from '../components/Ticker';
-import { EDU_ITEMS } from '../data/educativoData';
+import multimediaService from '../services/multimediaService';
 import '../styles/MaterialEducativo.css';
 
 export default function MaterialEducativo() {
-  useReveal();
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  useReveal([items]);
+
+  useEffect(() => {
+    const fetchMaterial = async () => {
+      try {
+        const data = await multimediaService.fetchByType('MATERIAL_EDUCATIVO');
+        setItems(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMaterial();
+  }, []);
+
   return (
     <>
       <Ticker text="📚 Material Educativo · Guías · Manuales · Cuadernos · Para todos los niveles" />
       <PageHero badge="📚 Recursos Pedagógicos" title="Material Educativo" description="Guías, manuales, partituras y cuadernos pedagógicos desarrollados por la escuela para compartir el saber carnavalero." />
       <section className="material-section">
         <div className="material-grid">
-          {EDU_ITEMS.map(({ id, emoji, title, type, level, pages }) => (
-            <Link to={`/material-educativo/${id}`} key={id} className="material-link">
+          {loading && <p>Cargando material...</p>}
+          {error && <p className="error">{error}</p>}
+          {!loading && !error && items.length === 0 && <p>No hay material educativo disponible.</p>}
+          {!loading && !error && items.map((item) => (
+            <Link to={`/material-educativo/${item.id}`} key={item.id} className="material-link">
               <article className="edu-card reveal">
-                <div className="edu-card-top">{emoji}</div>
+                <div className="edu-card-top" style={item.url ? { padding: 0, overflow: 'hidden', background: 'transparent' } : {}}>
+                  {item.url ? (
+                    <img src={item.url} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    "📚"
+                  )}
+                </div>
                 <div className="edu-card-body">
-                  <span className="media-tag">{type}</span>
-                  <h3>{title}</h3>
-                  <p className="edu-card-meta">Nivel: {level} · {pages}</p>
+                  <span className="media-tag">Material Educativo</span>
+                  <h3>{item.title}</h3>
+                  <p className="edu-card-meta">
+                    {item.author && `Por ${item.author}`}
+                    {item.year && ` · ${item.year}`}
+                  </p>
                   <button type="button" className="download-btn material-download-btn">⬇ Ver Detalles</button>
                 </div>
               </article>
