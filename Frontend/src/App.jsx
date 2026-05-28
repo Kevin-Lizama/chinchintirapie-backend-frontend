@@ -95,7 +95,7 @@ function Layout() {
                     <Route path="/tienda" element={<Tienda />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/recuperar-password" element={<RecuperarPassword />} />
-                    <Route path="/reset-password" element={<ResetPassword />} />
+                    <Route path="/reset-password/:token" element={<ResetPassword />} />
 
                     {/* DETALLES */}
                     <Route path="/noticias/:id" element={<NoticiaDetail />} />
