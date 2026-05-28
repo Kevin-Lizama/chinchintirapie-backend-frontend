@@ -21,13 +21,13 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromEmail);
         message.setTo(to);
-        message.setSubject("Recuperación de Contraseña - Chin Chin Tirapié");
+        message.setSubject("Recuperación de Contraseña - Chinchintirapié");
         message.setText("Hola,\n\n"
                 + "Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para crear una nueva:\n\n"
                 + resetLink + "\n\n"
                 + "Si no has solicitado este cambio, ignora este correo.\n\n"
                 + "Saludos,\n"
-                + "El equipo de Chin Chin Tirapié");
+                + "El equipo de Chinchintirapié");
 
         mailSender.send(message);
     }
