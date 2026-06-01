@@ -1,6 +1,33 @@
 .organizacion-page {
   background: var(--crema);
 }
+
+/* ── Section header (matching Home) ── */
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 0 1rem;
+}
+
+.section-header h2 {
+  font-family: var(--font-titulo);
+  font-size: clamp(2rem, 5vw, 3rem);
+  letter-spacing: 3px;
+  color: var(--oscuro);
+  margin-bottom: .5rem;
+}
+
+.section-header h2 span {
+  color: var(--purpura);
+}
+
+.section-header p {
+  color: #5a3e2b;
+  max-width: 550px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
 .organizacion-intro {
   padding: 4rem 2rem;
   max-width: 1100px;

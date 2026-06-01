@@ -163,7 +163,7 @@ export default function Home() {
             ))}
           </div>
           <div className="talleres-action reveal" style={{ textAlign: 'center', marginTop: '3rem' }}>
-            <Link to="/organizacion" className="btn btn-primary">Ver Organización</Link>
+            <a href="/organizacion#los-tres-cuerpos" className="btn btn-primary">Ver Organización</a>
           </div>
         </section>
 

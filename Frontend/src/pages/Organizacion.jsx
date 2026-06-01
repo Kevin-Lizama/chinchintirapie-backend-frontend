@@ -1,7 +1,8 @@
+import { useEffect } from 'react';
 import { useReveal } from '../hooks/useReveal';
 import PageHero from '../components/PageHero';
 import Ticker from '../components/Ticker';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import '../styles/Organizacion.css';
 
 const CUERPOS = [
@@ -74,6 +75,18 @@ const ENGRANAJES = [
 
 export default function Organizacion() {
   useReveal();
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (hash) {
+      setTimeout(() => {
+        const element = document.getElementById(hash.replace('#', ''));
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 150);
+    }
+  }, [hash]);
 
   return (
     <>
@@ -104,8 +117,8 @@ export default function Organizacion() {
           </div>
         </section>
 
-        <section className="organizacion-body">
-          <div className="section-header reveal">
+        <section className="organizacion-body" id="los-tres-cuerpos">
+          <div className="section-header reveal" style={{ textAlign: 'center' }}>
             <h2>Los tres <span>cuerpos</span></h2>
             <div className="deco-line"><span>🎭</span></div>
             <p>El frente de acción que da vida a nuestra identidad en el espacio público.</p>
