@@ -4,6 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { getPasswordStrength, isPasswordValid } from '../utils/passwordStrength';
 import '../styles/Login.css';
 
+const ADMIN_EMAILS = ['chinchintirapie@gmail.com'];
+
 // ── Barra de fuerza ──────────────────────────────────────────────────────────
 const LEVEL_CONFIG = {
   weak:   { bars: 1, color: 'var(--rojo)',    label: 'Débil'     },
@@ -76,8 +78,73 @@ export default function Login() {
   const [serverSuccess, setServerSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { login, register } = useAuth();
+  const { login, register, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
+
+  const handleGoogleLogin = () => {
+    if (typeof window === 'undefined' || !window.google) {
+      setServerError('El script de Google aún no ha cargado. Inténtalo de nuevo.');
+      return;
+    }
+
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    if (!clientId) {
+      setServerError('Falta configurar VITE_GOOGLE_CLIENT_ID en el archivo .env');
+      return;
+    }
+
+    setServerError('');
+    setServerSuccess('');
+    setLoading(true);
+
+    try {
+      const client = window.google.accounts.oauth2.initTokenClient({
+        client_id: clientId,
+        scope: 'openid email profile',
+        callback: async (tokenResponse) => {
+          if (tokenResponse && tokenResponse.access_token) {
+            try {
+              const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+              });
+              const userInfo = await res.json();
+
+              const email = userInfo.email.toLowerCase();
+              const role = ADMIN_EMAILS.includes(email) ? 'admin' : 'client';
+
+              loginWithGoogle({
+                name: userInfo.name,
+                email,
+                picture: userInfo.picture,
+                role,
+              });
+              
+              navigate(role === 'admin' ? '/admin' : '/');
+            } catch (err) {
+              setServerError('Error al obtener perfil de Google');
+            } finally {
+              setLoading(false);
+            }
+          } else {
+             setLoading(false);
+          }
+        },
+        error_callback: (error) => {
+          setLoading(false);
+          if (error && error.type === 'popup_closed') {
+            setServerError('Cancelaste el inicio de sesión con Google.');
+          } else {
+            setServerError('Ocurrió un error con el inicio de sesión de Google.');
+          }
+        },
+      });
+      client.requestAccessToken();
+    } catch (err) {
+      setLoading(false);
+      console.error("Error GSI:", err);
+      setServerError('Error al inicializar Google OAuth. Revisa la consola.');
+    }
+  };
 
   const handleChange = (field) => (e) => {
     setForm((f) => ({ ...f, [field]: e.target.value }));
@@ -213,6 +280,26 @@ export default function Login() {
             {loading ? '⏳ Procesando...' : tab === 'login' ? '🎭 Ingresar' : '🥁 Crear cuenta'}
           </button>
         </form>
+
+        <div className="google-divider">
+          <span>o continúa con</span>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleGoogleLogin}
+          disabled={loading}
+          className={`submit-btn google-btn ${loading ? 'loading' : ''}`}
+        >
+          <img
+            src="https://www.svgrepo.com/show/475656/google-color.svg"
+            alt="Google"
+            width="24"
+            height="24"
+            className="google-icon"
+          />
+          Continuar con Google
+        </button>
 
         <p className="login-footer">
           <Link to="/" className="login-back-link">← Volver al inicio</Link>

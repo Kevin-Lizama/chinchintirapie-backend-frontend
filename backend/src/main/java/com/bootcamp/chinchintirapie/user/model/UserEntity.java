@@ -2,7 +2,6 @@ package com.bootcamp.chinchintirapie.user.model;
 
 import com.bootcamp.chinchintirapie.articulo.model.ArticuloEntity;
 import com.bootcamp.chinchintirapie.multimedia.model.MultimediaEntity;
-import com.bootcamp.chinchintirapie.task.model.TaskEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -47,10 +46,6 @@ public class UserEntity {
     private String resetToken;
 
     private LocalDateTime resetTokenExpiry;
-
-    @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TaskEntity> tasks = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "uploadedBy", cascade = CascadeType.ALL, orphanRemoval = true)
