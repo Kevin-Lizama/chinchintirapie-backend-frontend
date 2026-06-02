@@ -15,6 +15,7 @@ function CedocAdmin() {
         url: '',
         description: '',
         year: '',
+        thumbnailUrl: '',
         author: ''
     });
 
@@ -31,6 +32,7 @@ function CedocAdmin() {
                 url: itemAEditar.url || '',
                 description: itemAEditar.description || '',
                 year: itemAEditar.year || '',
+                thumbnailUrl: itemAEditar.thumbnailUrl || '',
                 author: itemAEditar.author || ''
             });
         }
@@ -140,6 +142,14 @@ function CedocAdmin() {
                     name="year"
                     value={form.year}
                     placeholder="Año"
+                    onChange={handleChange}
+                />
+
+                <input
+                    type="text"
+                    name="thumbnailUrl"
+                    value={form.thumbnailUrl}
+                    placeholder="URL de la Portada (Imagen)"
                     onChange={handleChange}
                 />
 
