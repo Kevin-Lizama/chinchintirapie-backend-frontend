@@ -1,29 +1,22 @@
 import { apiFetch } from './apiFetch';
 
-// Construye la URL base de /api/users de forma robusta
-// En desarrollo usa el proxy de vite.config.js, en producción usa VITE_API_URL
-let apiBase = '/api/users';
-if (import.meta.env.VITE_API_URL) {
-  let url = import.meta.env.VITE_API_URL.trim().replace(/\/+$/, '');
-  url = url.replace(/\/auth\/?$/, '');
-  url = url.replace(/\/api\/?$/, '');
-  apiBase = `${url}/api/users`;
-}
-const API_BASE = apiBase;
-
+/**
+ * Servicio para gestión de usuarios (solo ADMIN).
+ * Conecta con el endpoint /api/users.
+ */
 const userService = {
   async fetchAll() {
-    const response = await apiFetch(`${API_BASE}`);
+    const response = await apiFetch('/users');
     return response.json();
   },
 
   async fetchById(id) {
-    const response = await apiFetch(`${API_BASE}/${id}`);
+    const response = await apiFetch(`/users/${id}`);
     return response.json();
   },
 
   async update(id, data) {
-    const response = await apiFetch(`${API_BASE}/${id}`, {
+    const response = await apiFetch(`/users/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
     });
@@ -31,7 +24,7 @@ const userService = {
   },
 
   async delete(id) {
-    await apiFetch(`${API_BASE}/${id}`, {
+    await apiFetch(`/users/${id}`, {
       method: 'DELETE',
     });
   },

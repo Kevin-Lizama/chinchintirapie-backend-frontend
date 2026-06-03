@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import multimediaService from '../../services/multimediaService';
+import storageService from '../../services/storageService';
 import { useAuth } from '../../context/AuthContext';
 import '../../styles/Admin.css';
 
@@ -15,13 +16,18 @@ function RepositorioAdmin() {
         url: '',
         description: '',
         year: '',
+        thumbnailUrl: '',
         author: ''
     });
+
+    // Nuevo estado para controlar qué se está subiendo
+    const [mediaType, setMediaType] = useState('image'); // 'image' | 'video'
+    const [uploadingFile, setUploadingFile] = useState(false);
+    const [uploadingThumb, setUploadingThumb] = useState(false);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [successMsg, setSuccessMsg] = useState(null);
-
     const [toast, setToast] = useState({ show: false, title: '', message: '' });
 
     useEffect(() => {
@@ -31,8 +37,15 @@ function RepositorioAdmin() {
                 url: itemAEditar.url || '',
                 description: itemAEditar.description || '',
                 year: itemAEditar.year || '',
+                thumbnailUrl: itemAEditar.thumbnailUrl || '',
                 author: itemAEditar.author || ''
             });
+            // Autodetectar si es video (si contiene youtube o youtu.be)
+            if (itemAEditar.url && (itemAEditar.url.includes('youtube') || itemAEditar.url.includes('youtu.be'))) {
+                setMediaType('video');
+            } else {
+                setMediaType('image');
+            }
         }
     }, [itemAEditar]);
 
@@ -51,6 +64,28 @@ function RepositorioAdmin() {
             ...form,
             [e.target.name]: e.target.value
         });
+    };
+
+    const handleFileUpload = async (e, field) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (field === 'url') setUploadingFile(true);
+        if (field === 'thumbnailUrl') setUploadingThumb(true);
+        setError(null);
+
+        try {
+            const uploadedUrl = await storageService.uploadFile(file);
+            setForm(prev => ({
+                ...prev,
+                [field]: uploadedUrl
+            }));
+        } catch (err) {
+            setError(err.message || 'Error al subir el archivo');
+        } finally {
+            if (field === 'url') setUploadingFile(false);
+            if (field === 'thumbnailUrl') setUploadingThumb(false);
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -118,14 +153,57 @@ function RepositorioAdmin() {
                     required
                 />
 
-                <input
-                    type="text"
-                    name="url"
-                    value={form.url}
-                    placeholder="URL (enlace al repositorio)"
-                    onChange={handleChange}
-                    required
-                />
+                {/* --- SECCIÓN MULTIMEDIA (ARCHIVO PRINCIPAL) --- */}
+                <div style={{ padding: '15px', background: '#2a2a2a', borderRadius: '8px', marginBottom: '15px' }}>
+                    <p style={{ margin: '0 0 10px 0', fontWeight: 'bold' }}>Tipo de contenido:</p>
+                    <div style={{ display: 'flex', gap: '20px', marginBottom: '15px' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
+                            <input 
+                                type="radio" 
+                                checked={mediaType === 'image'} 
+                                onChange={() => setMediaType('image')} 
+                            />
+                            Imagen / PDF
+                        </label>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
+                            <input 
+                                type="radio" 
+                                checked={mediaType === 'video'} 
+                                onChange={() => setMediaType('video')} 
+                            />
+                            Video (YouTube)
+                        </label>
+                    </div>
+
+                    {mediaType === 'image' ? (
+                        <div>
+                            <p style={{ margin: '0 0 5px 0', fontSize: '0.9rem' }}>Sube el archivo principal (Imagen o PDF):</p>
+                            <input
+                                type="file"
+                                accept="image/*,application/pdf"
+                                onChange={(e) => handleFileUpload(e, 'url')}
+                                disabled={uploadingFile}
+                            />
+                            {uploadingFile && <span style={{ color: '#f59e0b' }}>Subiendo archivo...</span>}
+                            {form.url && !uploadingFile && (
+                                <div style={{ marginTop: '10px', fontSize: '0.9rem' }}>
+                                    <span style={{ color: '#4ade80' }}>✓ Archivo listo:</span> {form.url.split('/').pop()}
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <div>
+                            <input
+                                type="text"
+                                name="url"
+                                value={form.url}
+                                placeholder="Pega el enlace de YouTube aquí"
+                                onChange={handleChange}
+                                required={mediaType === 'video'}
+                            />
+                        </div>
+                    )}
+                </div>
 
                 <textarea
                     name="description"
@@ -143,6 +221,35 @@ function RepositorioAdmin() {
                     onChange={handleChange}
                 />
 
+                {/* --- SECCIÓN PORTADA (THUMBNAIL) --- */}
+                <div style={{ padding: '15px', background: '#2a2a2a', borderRadius: '8px', marginBottom: '15px' }}>
+                    <p style={{ margin: '0 0 10px 0', fontWeight: 'bold' }}>Portada (Opcional):</p>
+                    <p style={{ margin: '0 0 10px 0', fontSize: '0.9rem', color: '#a3a3a3' }}>
+                        Sube una imagen para mostrarla como portada en las listas (muy útil si el archivo principal es un PDF).
+                    </p>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileUpload(e, 'thumbnailUrl')}
+                        disabled={uploadingThumb}
+                    />
+                    {uploadingThumb && <span style={{ color: '#f59e0b' }}>Subiendo portada...</span>}
+                    {form.thumbnailUrl && !uploadingThumb && (
+                        <div style={{ marginTop: '10px' }}>
+                            <img src={form.thumbnailUrl} alt="Portada" style={{ height: '80px', borderRadius: '5px' }} />
+                        </div>
+                    )}
+                    {/* Input oculto para mantener la URL si deciden borrarla a mano o pegarla */}
+                    <input
+                        type="text"
+                        name="thumbnailUrl"
+                        value={form.thumbnailUrl}
+                        placeholder="URL directa de la portada (si tienes el link)"
+                        onChange={handleChange}
+                        style={{ marginTop: '10px' }}
+                    />
+                </div>
+
                 <input
                     type="text"
                     name="author"
@@ -153,14 +260,14 @@ function RepositorioAdmin() {
                 />
 
                 <div style={{ display: 'flex', gap: '10px' }}>
-                    <button type="submit" disabled={loading} style={{ background: 'var(--purpura)', color: 'white', padding: '10px 20px', borderRadius: '5px', cursor: 'pointer', border: 'none', fontWeight: 'bold' }}>
+                    <button type="submit" disabled={loading || uploadingFile || uploadingThumb} style={{ background: 'var(--purpura)', color: 'white', padding: '10px 20px', borderRadius: '5px', cursor: 'pointer', border: 'none', fontWeight: 'bold' }}>
                         {loading ? 'Guardando...' : (itemAEditar ? 'Guardar Cambios' : 'Publicar')}
                     </button>
 
                     {itemAEditar && (
                         <button 
                             type="button" 
-                            disabled={loading} 
+                            disabled={loading || uploadingFile || uploadingThumb} 
                             onClick={handleDelete}
                             style={{ background: 'var(--rojo)', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}
                         >

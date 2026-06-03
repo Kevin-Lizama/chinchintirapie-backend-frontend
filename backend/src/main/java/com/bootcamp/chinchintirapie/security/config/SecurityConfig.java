@@ -46,11 +46,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/contacto").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/articulos/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/multimedia/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/health").permitAll()
                         .requestMatchers("/forgot-password").permitAll()
                         .requestMatchers("/reset-password").permitAll()
                         // Rutas protegidas
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/users/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/upload").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())

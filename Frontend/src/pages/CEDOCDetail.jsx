@@ -44,8 +44,10 @@ export default function CEDOCDetail() {
       <div className="page-container">
         <Link to="/cedoc" className="page-back-link">← Volver al CEDOC</Link>
         <div className="detail-page-row">
-          <div className="article-icon detail-article-icon" style={article.url ? { padding: 0, overflow: 'hidden', background: 'transparent' } : { background: 'linear-gradient(135deg, var(--purpura), var(--azul))' }}>
-            {article.url ? (
+          <div className="article-icon detail-article-icon" style={article.thumbnailUrl || article.url ? { padding: 0, overflow: 'hidden', background: 'transparent' } : { background: 'linear-gradient(135deg, var(--purpura), var(--azul))' }}>
+            {article.thumbnailUrl ? (
+              <img src={article.thumbnailUrl} alt={article.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : article.url && (article.url.toLowerCase().endsWith('.jpg') || article.url.toLowerCase().endsWith('.png')) ? (
               <img src={article.url} alt={article.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
               "📚"
@@ -57,6 +59,13 @@ export default function CEDOCDetail() {
               <span className="meta-tag topic-pill">CEDOC</span>
             </div>
             <p className="detail-article-description">{article.description}</p>
+            {article.url && (
+              <div style={{ marginTop: '20px', marginBottom: '10px' }}>
+                <a href={article.url} target="_blank" rel="noreferrer" className="download-btn download-btn--solid" style={{ textDecoration: 'none', display: 'inline-block', background: 'var(--purpura)', color: 'white', padding: '10px 20px', borderRadius: '5px', fontWeight: 'bold' }}>
+                  {article.url.includes('youtube') || article.url.includes('youtu.be') ? '🎥 Ver Video' : '⬇ Leer / Descargar Archivo'}
+                </a>
+              </div>
+            )}
             <p style={{ marginTop: '1rem', color: '#999', fontSize: '.9rem' }}>
               Por {article.author} · {article.uploadedAt ? new Date(article.uploadedAt).toLocaleDateString() : ''}
             </p>

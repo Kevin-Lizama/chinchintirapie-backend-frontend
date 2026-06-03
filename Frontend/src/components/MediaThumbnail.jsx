@@ -1,6 +1,22 @@
 import React from 'react';
 
-export default function MediaThumbnail({ url, alt, typeEmoji = '📂' }) {
+export default function MediaThumbnail({ url, thumbnailUrl, alt, typeEmoji = '📂' }) {
+  if (thumbnailUrl) {
+    return (
+      <img 
+        src={thumbnailUrl} 
+        alt={alt} 
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+        onError={(e) => {
+          e.target.style.display = 'none';
+          if (e.target.parentNode) {
+            e.target.parentNode.innerHTML = `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--rojo), var(--naranja)); font-size: 3rem;">${typeEmoji}</div>`;
+          }
+        }}
+      />
+    );
+  }
+
   if (!url) {
     return (
       <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, var(--rojo), var(--naranja))', fontSize: '3rem' }}>

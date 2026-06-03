@@ -1,31 +1,29 @@
-// En desarrollo usa el proxy de vite.config.js ('/api/auth')
-// En producción usará la URL del backend definida en VITE_API_URL
-let apiBase = '/api/auth';
-if (import.meta.env.VITE_API_URL) {
-  let url = import.meta.env.VITE_API_URL.trim().replace(/\/+$/, '');
-  url = url.replace(/\/auth\/?$/, '');
-  if (!url.endsWith('/api')) {
-    apiBase = `${url}/api/auth`;
-  } else {
-    apiBase = `${url}/auth`;
-  }
-}
-const API_BASE = apiBase;
-
 /**
- * Servicio de autenticación usando fetch nativo.
- * Se conecta al backend Spring Boot JWT en /api/auth/*
+ * authService.js — Servicio de autenticación.
+ *
+ * NOTA: Este servicio usa fetch() nativo en lugar de apiFetch().
+ * ¿Por qué? Porque apiFetch importa authService para obtener el token.
+ * Si authService importara apiFetch, tendríamos una "dependencia circular":
+ *   authService → apiFetch → authService → apiFetch → ... (bucle infinito)
+ *
+ * Esto no es un problema porque los endpoints de auth (login, register,
+ * forgot-password, reset-password) son PÚBLICOS — no necesitan token JWT.
  */
+import { API_BASE } from './apiConfig';
+
+// Los endpoints de autenticación están bajo /api/auth
+const AUTH_BASE = `${API_BASE}/auth`;
+
 const authService = {
   /**
    * Registrar nuevo usuario
    * @param {string} fullName
    * @param {string} email
    * @param {string} password
-   * @returns {Promise<{token, tokenType, userId, fullName, email, role}>}
+   * @returns {Promise<{message: string}>}
    */
   async register(fullName, email, password) {
-    const response = await fetch(`${API_BASE}/register`, {
+    const response = await fetch(`${AUTH_BASE}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ fullName, email, password }),
@@ -48,7 +46,7 @@ const authService = {
    * @returns {Promise<{token, tokenType, userId, fullName, email, role}>}
    */
   async login(email, password) {
-    const response = await fetch(`${API_BASE}/login`, {
+    const response = await fetch(`${AUTH_BASE}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -129,7 +127,7 @@ const authService = {
    * @returns {Promise<{message: string}>}
    */
   async forgotPassword(email) {
-    const response = await fetch(`${API_BASE}/forgot-password`, {
+    const response = await fetch(`${AUTH_BASE}/forgot-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),
@@ -152,7 +150,7 @@ const authService = {
    * @returns {Promise<{message: string}>}
    */
   async resetPassword(token, newPassword) {
-    const response = await fetch(`${API_BASE}/reset-password`, {
+    const response = await fetch(`${AUTH_BASE}/reset-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token, newPassword }),

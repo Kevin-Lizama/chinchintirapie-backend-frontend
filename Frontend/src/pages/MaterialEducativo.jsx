@@ -40,7 +40,7 @@ export default function MaterialEducativo() {
             <Link to={`/material-educativo/${item.id}`} key={item.id} className="material-link">
               <article className="edu-card reveal">
                 <div className="edu-card-top" style={item.url ? { padding: 0, overflow: 'hidden', background: 'transparent' } : {}}>
-                  <MediaThumbnail url={item.url} alt={item.title} typeEmoji="✏️" />
+                  <MediaThumbnail url={item.url} thumbnailUrl={item.thumbnailUrl} alt={item.title} typeEmoji="✏️" />
                 </div>
                 <div className="edu-card-body">
                   <span className="media-tag">Material Educativo</span>

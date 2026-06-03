@@ -44,8 +44,10 @@ export default function MaterialEducativoDetail() {
       <div className="educativo-detail">
         <Link to="/material-educativo" className="back-link">← Volver a Material Educativo</Link>
         <div className="educativo-card">
-          <div className="educativo-icon" style={item.url ? { background: 'transparent', overflow: 'hidden' } : {}}>
-            {item.url ? (
+          <div className="educativo-icon" style={item.thumbnailUrl || item.url ? { background: 'transparent', overflow: 'hidden' } : {}}>
+            {item.thumbnailUrl ? (
+              <img src={item.thumbnailUrl} alt={item.title} style={{ width: '100%', maxHeight: '400px', objectFit: 'cover', borderRadius: '12px' }} />
+            ) : item.url && (item.url.toLowerCase().endsWith('.jpg') || item.url.toLowerCase().endsWith('.png')) ? (
               <img src={item.url} alt={item.title} style={{ width: '100%', maxHeight: '400px', objectFit: 'cover', borderRadius: '12px' }} />
             ) : (
               "📚"
@@ -53,6 +55,13 @@ export default function MaterialEducativoDetail() {
           </div>
           <h3 className="educativo-title">{item.title}</h3>
           <p className="educativo-copy">{item.description || 'Este material es de libre distribución para fines pedagógicos.'}</p>
+          {item.url && (
+            <div style={{ marginTop: '20px', marginBottom: '10px' }}>
+              <a href={item.url} target="_blank" rel="noreferrer" className="download-btn download-btn--solid" style={{ textDecoration: 'none', display: 'inline-block', background: 'var(--naranja)', color: 'white', padding: '10px 20px', borderRadius: '5px', fontWeight: 'bold' }}>
+                {item.url.includes('youtube') || item.url.includes('youtu.be') ? '🎥 Ver Video' : '⬇ Leer / Descargar Archivo'}
+              </a>
+            </div>
+          )}
           <p style={{ color: '#999', fontSize: '.9rem' }}>
             {item.author && `Por ${item.author}`}
             {item.uploadedAt && ` · ${new Date(item.uploadedAt).toLocaleDateString()}`}

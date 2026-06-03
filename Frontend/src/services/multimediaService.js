@@ -1,38 +1,20 @@
-import authService from './authService';
-
-// En desarrollo usa el proxy de vite.config.js ('/api')
-// En producción usará la URL del backend
-let apiBase = '/api';
-if (import.meta.env.VITE_API_URL) {
-  let url = import.meta.env.VITE_API_URL.trim().replace(/\/+$/, '');
-  url = url.replace(/\/auth\/?$/, '');
-  if (!url.endsWith('/api')) {
-    apiBase = `${url}/api`;
-  } else {
-    apiBase = url;
-  }
-}
-const API_BASE = apiBase;
-
-const getAuthHeaders = () => {
-  const token = authService.getToken();
-  return {
-    'Content-Type': 'application/json',
-    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-  };
-};
+import { apiFetch } from './apiFetch';
 
 /**
  * Servicio para multimedia (Repositorio, CEDOC, Material Educativo).
  * Conecta con el endpoint /api/multimedia.
+ *
+ * Usa apiFetch que automáticamente:
+ * - Construye la URL completa (API_BASE + endpoint)
+ * - Agrega el token JWT en las cabeceras
+ * - Maneja errores de red y sesión expirada
  */
 const multimediaService = {
   /**
    * Obtener todos los multimedia
    */
   async fetchAll() {
-    const response = await fetch(`${API_BASE}/multimedia`);
-    if (!response.ok) throw new Error('Error al obtener multimedia');
+    const response = await apiFetch('/multimedia');
     return response.json();
   },
 
@@ -40,8 +22,7 @@ const multimediaService = {
    * Obtener un multimedia por ID
    */
   async fetchById(id) {
-    const response = await fetch(`${API_BASE}/multimedia/${id}`);
-    if (!response.ok) throw new Error('Multimedia no encontrado');
+    const response = await apiFetch(`/multimedia/${id}`);
     return response.json();
   },
 
@@ -50,8 +31,7 @@ const multimediaService = {
    */
   async fetchByType(type) {
     const timestamp = new Date().getTime();
-    const response = await fetch(`${API_BASE}/multimedia/type/${type}?t=${timestamp}`);
-    if (!response.ok) throw new Error('Error al obtener multimedia por tipo');
+    const response = await apiFetch(`/multimedia/type/${type}?t=${timestamp}`);
     return response.json();
   },
 
@@ -80,12 +60,10 @@ const multimediaService = {
    * Crear un nuevo multimedia
    */
   async create(data) {
-    const response = await fetch(`${API_BASE}/multimedia`, {
+    const response = await apiFetch('/multimedia', {
       method: 'POST',
-      headers: getAuthHeaders(),
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error('Error al crear el multimedia');
     return response.json();
   },
 
@@ -93,12 +71,10 @@ const multimediaService = {
    * Actualizar un multimedia
    */
   async update(id, data) {
-    const response = await fetch(`${API_BASE}/multimedia/${id}`, {
+    const response = await apiFetch(`/multimedia/${id}`, {
       method: 'PUT',
-      headers: getAuthHeaders(),
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error('Error al actualizar el multimedia');
     return response.json();
   },
 
@@ -106,11 +82,9 @@ const multimediaService = {
    * Eliminar un multimedia
    */
   async delete(id) {
-    const response = await fetch(`${API_BASE}/multimedia/${id}`, {
+    await apiFetch(`/multimedia/${id}`, {
       method: 'DELETE',
-      headers: getAuthHeaders(),
     });
-    if (!response.ok) throw new Error('Error al eliminar el multimedia');
   },
 };
 

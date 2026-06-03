@@ -56,7 +56,7 @@ export default function Repositorio() {
             <Link to={`/repositorio/${item.id}`} key={item.id} className="repositorio-link-reset">
               <div className="media-card reveal">
                 <div className="media-thumb" style={item.url ? { padding: 0, overflow: 'hidden', background: 'transparent' } : {}}>
-                  <MediaThumbnail url={item.url} alt={item.title} typeEmoji="📂" />
+                  <MediaThumbnail url={item.url} thumbnailUrl={item.thumbnailUrl} alt={item.title} typeEmoji="📂" />
                 </div>
                 <div className="media-info">
                   <span className="media-tag">Repositorio</span>

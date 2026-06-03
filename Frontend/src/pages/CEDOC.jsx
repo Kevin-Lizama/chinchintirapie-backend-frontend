@@ -64,7 +64,7 @@ export default function CEDOC() {
                 <Link to={`/cedoc/${a.id}`} key={a.id} className="link-reset">
                   <div className="article-card reveal">
                     <div className="article-icon" style={a.url ? { padding: 0, overflow: 'hidden', background: 'transparent', borderRadius: '12px' } : { background: 'linear-gradient(135deg, var(--purpura), var(--azul))' }}>
-                      <MediaThumbnail url={a.url} alt={a.title} typeEmoji="📚" />
+                      <MediaThumbnail url={a.url} thumbnailUrl={a.thumbnailUrl} alt={a.title} typeEmoji="📚" />
                     </div>
                     <div className="article-body">
                       <h3>{a.title}</h3>

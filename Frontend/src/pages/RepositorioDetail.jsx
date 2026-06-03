@@ -65,8 +65,14 @@ export default function RepositorioDetail() {
               <iframe src={item.url} style={{ width: '100%', height: '400px', borderRadius: '16px', marginBottom: '1.5rem', border: 'none' }} allowFullScreen title={item.title} />
             ) : item.url.includes('youtube.com/watch?v=') || item.url.includes('youtu.be/') ? (
               <iframe src={item.url.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/')} style={{ width: '100%', height: '400px', borderRadius: '16px', marginBottom: '1.5rem', border: 'none' }} allowFullScreen title={item.title} />
+            ) : item.url.toLowerCase().endsWith('.pdf') || item.url.toLowerCase().includes('.doc') ? (
+              item.thumbnailUrl ? (
+                <img src={item.thumbnailUrl} alt={item.title} style={{ width: '100%', maxHeight: '500px', objectFit: 'cover', borderRadius: '16px', marginBottom: '1.5rem' }} />
+              ) : (
+                <div className="repo-detail-emoji" style={{ marginBottom: '1.5rem' }}>📄</div>
+              )
             ) : (
-              <img src={item.url} alt={item.title} style={{ width: '100%', maxHeight: '500px', objectFit: 'cover', borderRadius: '16px', marginBottom: '1.5rem' }} />
+              <img src={item.thumbnailUrl || item.url} alt={item.title} style={{ width: '100%', maxHeight: '500px', objectFit: 'cover', borderRadius: '16px', marginBottom: '1.5rem' }} />
             )
           ) : (
             <div className="repo-detail-emoji">📂</div>
@@ -75,6 +81,13 @@ export default function RepositorioDetail() {
           <p className="repo-detail-text">
             {item.description || 'El archivo se encuentra en los registros históricos del repositorio.'}
           </p>
+          {item.url && (
+            <div style={{ marginTop: '20px', marginBottom: '10px' }}>
+              <a href={item.url} target="_blank" rel="noreferrer" style={{ textDecoration: 'none', display: 'inline-block', background: 'var(--purpura)', color: 'white', padding: '10px 20px', borderRadius: '5px', fontWeight: 'bold' }}>
+                {item.url.includes('youtube') || item.url.match(/\.(mp4|webm|ogg)$/i) ? '🎥 Ver Video' : '⬇ Descargar / Leer Archivo'}
+              </a>
+            </div>
+          )}
           <p style={{ color: '#999', fontSize: '.9rem', marginTop: '.5rem' }}>
             {item.author && `Por ${item.author}`}
             {item.uploadedAt && ` · ${new Date(item.uploadedAt).toLocaleDateString()}`}
