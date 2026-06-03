@@ -48,21 +48,16 @@ export function AuthProvider({ children }) {
     setToken(null);
   }, []);
 
-  const loginWithGoogle = useCallback(({ name, email, picture, role }) => {
-    const userData = {
-      id: email, // Usamos el email como ID temporal para GSI
-      fullName: name,
-      email,
-      role,
-      picture,
-    };
-    const googleToken = `google-auth-token`; // Token simbólico
-    setUser(userData);
-    setToken(googleToken);
-    
-    // Persistir en localStorage para que resista recargas de página
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('token', googleToken);
+  const loginWithGoogle = useCallback(async (token) => {
+    const data = await authService.loginWithGoogle(token);
+    setUser({
+      id: data.userId,
+      fullName: data.fullName,
+      email: data.email,
+      role: data.role,
+    });
+    setToken(data.token);
+    return data.role; // Returning role so Login.jsx can redirect accordingly
   }, []);
 
   const value = {

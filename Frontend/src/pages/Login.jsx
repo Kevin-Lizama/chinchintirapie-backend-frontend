@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getPasswordStrength, isPasswordValid } from '../utils/passwordStrength';
@@ -81,70 +81,59 @@ export default function Login() {
   const { login, register, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
-  const handleGoogleLogin = () => {
-    if (typeof window === 'undefined' || !window.google) {
-      setServerError('El script de Google aún no ha cargado. Inténtalo de nuevo.');
-      return;
-    }
+  // We'll use useEffect to render the Google button once the script is loaded
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
 
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-    if (!clientId) {
-      setServerError('Falta configurar VITE_GOOGLE_CLIENT_ID en el archivo .env');
-      return;
-    }
+    let checkGoogleLoad;
 
-    setServerError('');
-    setServerSuccess('');
-    setLoading(true);
+    const initGoogleAuth = async () => {
+      try {
+        const clientId = await authService.getGoogleClientId();
+        
+        if (!clientId) {
+          setServerError('No se pudo obtener el Client ID de Google desde el servidor.');
+          return;
+        }
 
-    try {
-      const client = window.google.accounts.oauth2.initTokenClient({
-        client_id: clientId,
-        scope: 'openid email profile',
-        callback: async (tokenResponse) => {
-          if (tokenResponse && tokenResponse.access_token) {
-            try {
-              const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-                headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-              });
-              const userInfo = await res.json();
+        checkGoogleLoad = setInterval(() => {
+          if (window.google && window.google.accounts && window.google.accounts.id) {
+            clearInterval(checkGoogleLoad);
+            
+            window.google.accounts.id.initialize({
+              client_id: clientId,
+              callback: async (response) => {
+                setServerError('');
+                setLoading(true);
+                try {
+                  const role = await loginWithGoogle(response.credential);
+                  navigate(role === 'admin' ? '/admin' : '/');
+                } catch (err) {
+                  setServerError(err.message || 'Error al iniciar sesión con Google');
+                } finally {
+                  setLoading(false);
+                }
+              }
+            });
 
-              const email = userInfo.email.toLowerCase();
-              const role = ADMIN_EMAILS.includes(email) ? 'admin' : 'client';
-
-              loginWithGoogle({
-                name: userInfo.name,
-                email,
-                picture: userInfo.picture,
-                role,
-              });
-              
-              navigate(role === 'admin' ? '/admin' : '/');
-            } catch (err) {
-              setServerError('Error al obtener perfil de Google');
-            } finally {
-              setLoading(false);
-            }
-          } else {
-             setLoading(false);
+            window.google.accounts.id.renderButton(
+              document.getElementById("google-button-container"),
+              { theme: "outline", size: "large", width: "100%", text: "continue_with" }
+            );
           }
-        },
-        error_callback: (error) => {
-          setLoading(false);
-          if (error && error.type === 'popup_closed') {
-            setServerError('Cancelaste el inicio de sesión con Google.');
-          } else {
-            setServerError('Ocurrió un error con el inicio de sesión de Google.');
-          }
-        },
-      });
-      client.requestAccessToken();
-    } catch (err) {
-      setLoading(false);
-      console.error("Error GSI:", err);
-      setServerError('Error al inicializar Google OAuth. Revisa la consola.');
-    }
-  };
+        }, 100);
+
+      } catch (err) {
+        console.error("Error al preparar Google Auth:", err);
+      }
+    };
+
+    initGoogleAuth();
+
+    return () => {
+      if (checkGoogleLoad) clearInterval(checkGoogleLoad);
+    };
+  }, [loginWithGoogle, navigate]);
 
   const handleChange = (field) => (e) => {
     setForm((f) => ({ ...f, [field]: e.target.value }));
@@ -285,21 +274,10 @@ export default function Login() {
           <span>o continúa con</span>
         </div>
 
-        <button
-          type="button"
-          onClick={handleGoogleLogin}
-          disabled={loading}
-          className={`submit-btn google-btn ${loading ? 'loading' : ''}`}
-        >
-          <img
-            src="https://www.svgrepo.com/show/475656/google-color.svg"
-            alt="Google"
-            width="24"
-            height="24"
-            className="google-icon"
-          />
-          Continuar con Google
-        </button>
+        <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          {loading && <p style={{ marginBottom: '1rem', color: 'var(--blanco)' }}>⏳ Preparando...</p>}
+          <div id="google-button-container" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}></div>
+        </div>
 
         <p className="login-footer">
           <Link to="/" className="login-back-link">← Volver al inicio</Link>

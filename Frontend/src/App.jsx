@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar.jsx'
 import Footer from './components/Footer.jsx'
+import ScrollToTop from './components/ScrollToTop.jsx'
 import { AuthProvider } from './context/AuthContext'
 import './styles/global.css'
 
@@ -160,6 +161,7 @@ function Layout() {
             </Suspense>
 
             {!isLogin && <Footer />}
+            <ScrollToTop />
         </>
     )
 }
