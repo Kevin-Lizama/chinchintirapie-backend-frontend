@@ -16,6 +16,14 @@ public class AuthController {
 
     private final AuthService authService;
 
+    @org.springframework.beans.factory.annotation.Value("${google.client-id}")
+    private String googleClientId;
+
+    @GetMapping("/google/client-id")
+    public java.util.Map<String, String> getGoogleClientId() {
+        return java.util.Map.of("clientId", googleClientId);
+    }
+
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public java.util.Map<String, String> register(@Valid @RequestBody RegisterRequestDto request) {
