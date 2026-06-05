@@ -34,6 +34,7 @@ public class MultimediaService {
                 .year(request.year())
                 .type(request.type())
                 .categories(request.categories() != null ? request.categories() : List.of())
+                .galleryUrls(request.galleryUrls() != null ? request.galleryUrls() : List.of())
                 .thumbnailUrl(request.thumbnailUrl())
                 .author(request.author())
                 .uploadedBy(user)
@@ -94,6 +95,7 @@ public class MultimediaService {
         multimedia.setYear(request.year());
         multimedia.setType(request.type());
         multimedia.setCategories(request.categories() != null ? request.categories() : List.of());
+        multimedia.setGalleryUrls(request.galleryUrls() != null ? request.galleryUrls() : List.of());
         multimedia.setThumbnailUrl(request.thumbnailUrl());
         multimedia.setAuthor(request.author());
 

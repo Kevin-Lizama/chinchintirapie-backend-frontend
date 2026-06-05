@@ -25,6 +25,10 @@ function RepositorioAdmin() {
     const [availableCategories, setAvailableCategories] = useState([]);
     const [newCategory, setNewCategory] = useState('');
 
+    // Galería de imágenes
+    const [galleryUrls, setGalleryUrls] = useState([]);
+    const [uploadingGallery, setUploadingGallery] = useState(false);
+
     // Nuevo estado para controlar qué se está subiendo
     const [mediaType, setMediaType] = useState('image'); // 'image' | 'video'
     const [uploadingFile, setUploadingFile] = useState(false);
@@ -57,6 +61,7 @@ function RepositorioAdmin() {
                 author: itemAEditar.author || ''
             });
             setSelectedCategories(itemAEditar.categories || []);
+            setGalleryUrls(itemAEditar.galleryUrls || []);
             // Autodetectar si es video (si contiene youtube o youtu.be)
             if (itemAEditar.url && (itemAEditar.url.includes('youtube') || itemAEditar.url.includes('youtu.be'))) {
                 setMediaType('video');
@@ -105,17 +110,51 @@ function RepositorioAdmin() {
         }
     };
 
+    const handleGalleryUpload = async (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+        setUploadingGallery(true);
+        setError(null);
+        try {
+            const urls = [];
+            for (const file of files) {
+                const uploadedUrl = await storageService.uploadFile(file);
+                urls.push(uploadedUrl);
+            }
+            setGalleryUrls(prev => [...prev, ...urls]);
+        } catch (err) {
+            setError(err.message || 'Error al subir imágenes de galería');
+        } finally {
+            setUploadingGallery(false);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
         setSuccessMsg(null);
 
+        let finalUrl = form.url;
+        // Si no subió archivo principal, pero sí imágenes en galería, usamos la primera como principal
+        if (!finalUrl && galleryUrls.length > 0) {
+            finalUrl = galleryUrls[0];
+        }
+
+        // Si no hay ninguna de las dos cosas, mostramos un error amigable
+        if (!finalUrl) {
+            setError("Debes subir un archivo principal o al menos una imagen en la galería.");
+            setLoading(false);
+            return;
+        }
+
         const payload = {
             ...form,
+            url: finalUrl,
             type: 'REPOSITORIO',
             authorId: user?.id || 1,
-            categories: selectedCategories
+            categories: selectedCategories,
+            galleryUrls: galleryUrls
         };
 
         try {
@@ -175,18 +214,18 @@ function RepositorioAdmin() {
                     <p style={{ margin: '0 0 10px 0', fontWeight: 'bold' }}>Tipo de contenido:</p>
                     <div style={{ display: 'flex', gap: '20px', marginBottom: '15px' }}>
                         <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
-                            <input 
-                                type="radio" 
-                                checked={mediaType === 'image'} 
-                                onChange={() => setMediaType('image')} 
+                            <input
+                                type="radio"
+                                checked={mediaType === 'image'}
+                                onChange={() => setMediaType('image')}
                             />
                             Imagen / PDF
                         </label>
                         <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
-                            <input 
-                                type="radio" 
-                                checked={mediaType === 'video'} 
-                                onChange={() => setMediaType('video')} 
+                            <input
+                                type="radio"
+                                checked={mediaType === 'video'}
+                                onChange={() => setMediaType('video')}
                             />
                             Video (YouTube)
                         </label>
@@ -267,6 +306,45 @@ function RepositorioAdmin() {
                     />
                 </div>
 
+                {/* --- SECCIÓN GALERÍA DE IMÁGENES --- */}
+                <div style={{ padding: '15px', background: '#2a2a2a', borderRadius: '8px', marginBottom: '15px' }}>
+                    <p style={{ margin: '0 0 10px 0', fontWeight: 'bold' }}>🖼️ Galería de Imágenes (Opcional):</p>
+                    <p style={{ margin: '0 0 10px 0', fontSize: '0.9rem', color: '#a3a3a3' }}>
+                        Sube varias fotos para crear un álbum. Al entrar a la publicación se mostrarán todas.
+                    </p>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handleGalleryUpload}
+                        disabled={uploadingGallery}
+                    />
+                    {uploadingGallery && <span style={{ color: '#f59e0b', display: 'block', marginTop: '5px' }}>Subiendo imágenes...</span>}
+                    {galleryUrls.length > 0 && (
+                        <div style={{ marginTop: '10px' }}>
+                            <p style={{ margin: '0 0 8px 0', fontSize: '0.85rem', color: '#a3a3a3' }}>{galleryUrls.length} imagen(es) en la galería:</p>
+                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                {galleryUrls.map((gUrl, idx) => (
+                                    <div key={idx} style={{ position: 'relative', display: 'inline-block' }}>
+                                        <img src={gUrl} alt={`Galería ${idx + 1}`} style={{ height: '70px', borderRadius: '5px', objectFit: 'cover' }} />
+                                        <button
+                                            type="button"
+                                            onClick={() => setGalleryUrls(prev => prev.filter((_, i) => i !== idx))}
+                                            style={{
+                                                position: 'absolute', top: '-6px', right: '-6px',
+                                                background: '#e74c3c', color: '#fff', border: 'none',
+                                                borderRadius: '50%', width: '20px', height: '20px',
+                                                fontSize: '0.7rem', cursor: 'pointer', lineHeight: '20px',
+                                                textAlign: 'center', padding: 0
+                                            }}
+                                        >✕</button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+
                 <input
                     type="text"
                     name="author"
@@ -340,9 +418,9 @@ function RepositorioAdmin() {
                     </button>
 
                     {itemAEditar && (
-                        <button 
-                            type="button" 
-                            disabled={loading || uploadingFile || uploadingThumb} 
+                        <button
+                            type="button"
+                            disabled={loading || uploadingFile || uploadingThumb}
                             onClick={handleDelete}
                             style={{ background: 'var(--rojo)', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}
                         >
