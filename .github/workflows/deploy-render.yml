@@ -1,0 +1,22 @@
+name: Deploy to Render
+
+# Se dispara automáticamente en cada push a main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-backend:
+    name: 🚀 Deploy Backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy (Backend)
+        run: |
+          echo "Disparando deploy del Backend en Render..."
+          curl -s -o /dev/null -w "HTTP Status: %{http_code}\n" \
+            -X POST \
+            -H "Accept: application/json" \
+            "${{ secrets.RENDER_BACKEND_DEPLOY_HOOK_URL }}"
+          echo "✅ Deploy del Backend disparado correctamente."
+

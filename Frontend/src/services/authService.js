@@ -40,6 +40,50 @@ const authService = {
   },
 
   /**
+   * Obtener el Client ID de Google desde el backend
+   * @returns {Promise<string>}
+   */
+  async getGoogleClientId() {
+    const response = await fetch(`${AUTH_BASE}/google/client-id`);
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || 'Error al obtener Google Client ID');
+    }
+    return data.clientId;
+  },
+
+  /**
+   * Iniciar sesión con Google
+   * @param {string} token - ID Token de Google
+   * @returns {Promise<{token, tokenType, userId, fullName, email, role}>}
+   */
+  async loginWithGoogle(token) {
+    const response = await fetch(`${AUTH_BASE}/google`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      const errorMsg = data.message || data.error || 'Error al iniciar sesión con Google';
+      throw new Error(errorMsg);
+    }
+
+    // Guardar token y datos del usuario en localStorage
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify({
+      id: data.userId,
+      fullName: data.fullName,
+      email: data.email,
+      role: data.role,
+    }));
+
+    return data;
+  },
+
+  /**
    * Iniciar sesión
    * @param {string} email
    * @param {string} password
