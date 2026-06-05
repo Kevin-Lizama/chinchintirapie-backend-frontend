@@ -18,7 +18,7 @@ export default function CEDOC() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const showQuickDownloads = false; // cambiar a true si se reutiliza pronto
   const navigate = useNavigate();
-  useReveal([articles]);
+  useReveal([articles, loading, searchTerm, selectedCategory]);
 
   useEffect(() => {
     const fetchCedoc = async () => {
@@ -27,7 +27,7 @@ export default function CEDOC() {
         setArticles(data);
         // intentar cargar categorías dinámicas desde backend
         try {
-          const cats = await multimediaService.fetchCategorias();
+          const cats = await multimediaService.fetchCategorias('CEDOC');
           // esperar arreglo simple de strings
           if (Array.isArray(cats) && cats.length > 0) setCategories(cats);
         } catch (catErr) {

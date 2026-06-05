@@ -12,13 +12,22 @@ export default function Repositorio() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  useReveal([items]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  useReveal([items, loading, search, selectedCategory]);
 
   useEffect(() => {
     const fetchRepo = async () => {
       try {
         const data = await multimediaService.fetchByType('REPOSITORIO');
         setItems(data);
+        // Cargar categorías dinámicas
+        try {
+          const cats = await multimediaService.fetchCategorias('REPOSITORIO');
+          if (Array.isArray(cats)) setCategories(cats);
+        } catch (_) {
+          // si falla, las categorías quedan vacías
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -28,23 +37,52 @@ export default function Repositorio() {
     fetchRepo();
   }, []);
 
-  const filtered = items.filter((i) =>
-    i.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = items.filter((i) => {
+    const hayBusqueda = search && search.trim() !== '';
+    const text = `${i.title || ''} ${i.description || ''} ${(i.categories || []).join(' ')}`.toLowerCase();
+    const matchesSearch = !hayBusqueda || text.includes(search.toLowerCase());
+    const matchesCategory = !selectedCategory || (i.categories && i.categories.includes(selectedCategory));
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <>
       <Ticker text="📂 Repositorio Documental · Fotografías · Videos · Audios · Documentos históricos" />
       <PageHero badge="📂 Archivo Digital" title="Repositorio Documental" description="Fotografías, audiovisuales y documentos de todas las ediciones del carnaval, desde los primeros ensayos hasta los últimos desfiles." />
       <div className="search-bar-wrap">
-        <div className="search-bar">
-          <input
-            type="text"
-            placeholder="Buscar en el repositorio..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <button>🔍 Buscar</button>
+        <div className="repo-controls">
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Buscar en el repositorio..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <button>🔍 Buscar</button>
+          </div>
+          {categories.length > 0 && (
+            <div className="repo-categories">
+              {categories.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  className={`repo-cat-pill${selectedCategory === c ? ' selected' : ''}`}
+                  onClick={() => setSelectedCategory(selectedCategory === c ? null : c)}
+                >
+                  {c}
+                </button>
+              ))}
+              {selectedCategory && (
+                <button
+                  type="button"
+                  className="repo-cat-pill repo-cat-clear"
+                  onClick={() => setSelectedCategory(null)}
+                >
+                  ✕ Limpiar
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
       <section className="repositorio-section">
@@ -61,6 +99,13 @@ export default function Repositorio() {
                 <div className="media-info">
                   <span className="media-tag">Repositorio</span>
                   <h4>{item.title}</h4>
+                  {item.categories && item.categories.length > 0 && (
+                    <div className="media-categories">
+                      {item.categories.map((cat) => (
+                        <span key={cat} className="media-cat-badge">{cat}</span>
+                      ))}
+                    </div>
+                  )}
                   <p>
                     {item.year && `${item.year} · `}
                     {item.author && `Por ${item.author}`}
@@ -74,3 +119,4 @@ export default function Repositorio() {
     </>
   );
 }
+

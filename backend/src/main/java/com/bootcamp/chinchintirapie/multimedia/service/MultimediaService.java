@@ -63,6 +63,26 @@ public class MultimediaService {
                 .toList();
     }
 
+    /**
+     * Obtener lista de categorías únicas, opcionalmente filtradas por tipo.
+     */
+    public List<String> getCategories(MultimediaType type) {
+        if (type != null) {
+            return multimediaRepository.findDistinctCategoriesByType(type);
+        }
+        return multimediaRepository.findDistinctCategories();
+    }
+
+    /**
+     * Buscar multimedia por tipo y categoría.
+     */
+    public List<MultimediaResponseDto> findByTypeAndCategory(MultimediaType type, String category) {
+        return multimediaRepository.findByTypeAndCategory(type, category)
+                .stream()
+                .map(MultimediaMapper::toResponseDto)
+                .toList();
+    }
+
     @Transactional
     public MultimediaResponseDto update(Long id, MultimediaRequestDto request) {
         MultimediaEntity multimedia = multimediaRepository.findById(id)
