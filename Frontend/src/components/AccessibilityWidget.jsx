@@ -59,9 +59,14 @@ function applyAccessibility(action, isActive) {
   }
 }
 
+// Cursor SVG grande encodado correctamente en base64
+const CURSOR_SVG = `<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'><path fill='black' stroke='white' stroke-width='1' d='M4 4l7.07 17 2.51-7.39L21 11.07z'/></svg>`;
+const CURSOR_B64 = btoa(CURSOR_SVG);
+const CURSOR_URL = `url("data:image/svg+xml;base64,${CURSOR_B64}") 0 0, auto`;
+
 const globalStyles = `
-  html.a11y-contrast body :not(.a11y-widget) { filter: contrast(150%) brightness(110%); }
-  html.a11y-links a:not(.a11y-widget a) { outline: 3px solid #ff0 !important; background: #000 !important; color: #ff0 !important; }
+  html.a11y-contrast body :not(.a11y-widget, .a11y-widget *) { filter: contrast(150%) brightness(110%); }
+  html.a11y-links a:not(.a11y-widget a, .a11y-widget *) { outline: 3px solid #ff0 !important; background: #000 !important; color: #ff0 !important; }
   html.a11y-text-md *:not(.a11y-widget, .a11y-widget *) { font-size: 115% !important; }
   html.a11y-text-lg *:not(.a11y-widget, .a11y-widget *) { font-size: 130% !important; }
   html.a11y-text-xl *:not(.a11y-widget, .a11y-widget *) { font-size: 150% !important; }
@@ -69,13 +74,29 @@ const globalStyles = `
   html.a11y-animations *:not(.a11y-widget, .a11y-widget *),
   html.a11y-animations *:not(.a11y-widget, .a11y-widget *)::before,
   html.a11y-animations *:not(.a11y-widget, .a11y-widget *)::after { animation: none !important; transition: none !important; }
-  html.a11y-no-images img:not(.a11y-widget img) { visibility: hidden !important; }
+  html.a11y-no-images img:not(.a11y-widget img, .a11y-widget *) { visibility: hidden !important; }
   html.a11y-dyslexia *:not(.a11y-widget, .a11y-widget *) { font-family: "Lexend", "OpenDyslexic", "Comic Sans MS", cursive !important; letter-spacing: 0.05em !important; word-spacing: 0.15em !important; line-height: 1.8 !important; }
-  html.a11y-cursor *:not(.a11y-widget, .a11y-widget *) { cursor: url("data:image/svg+xml,...") 0 0, auto !important; }
   html.a11y-lineheight *:not(.a11y-widget, .a11y-widget *) { line-height: 2 !important; }
   html.a11y-align *:not(.a11y-widget, .a11y-widget *) { text-align: left !important; }
-  html.a11y-saturation body :not(.a11y-widget) { filter: grayscale(100%); }
+  html.a11y-saturation body :not(.a11y-widget, .a11y-widget *) { filter: grayscale(100%); }
 `;
+
+// El cursor se aplica via JS directamente para evitar problemas con data URI en CSS
+function applyCursorStyle(isActive) {
+  const style = document.getElementById("a11y-cursor-style") || (() => {
+    const s = document.createElement("style");
+    s.id = "a11y-cursor-style";
+    document.head.appendChild(s);
+    return s;
+  })();
+  if (isActive) {
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'><path fill='black' stroke='white' stroke-width='1.5' d='M4 4l7.07 17 2.51-7.39L21 11.07z'/></svg>`;
+    const encoded = encodeURIComponent(svg);
+    style.textContent = `*:not(.a11y-widget, .a11y-widget *) { cursor: url("data:image/svg+xml,${encoded}") 4 4, auto !important; }`;
+  } else {
+    style.textContent = "";
+  }
+}
 
 let stylesInjected = false;
 function injectGlobalStyles() {
@@ -100,7 +121,12 @@ export default function AccessibilityWidget() {
   const toggle = (opt) => {
     const next = !active[opt.id];
     setActive((prev) => ({ ...prev, [opt.id]: next }));
-    applyAccessibility(opt.action, next);
+    // El cursor se maneja aparte con JS
+    if (opt.action === "toggle-cursor") {
+      applyCursorStyle(next);
+    } else {
+      applyAccessibility(opt.action, next);
+    }
   };
 
   const changeTextSize = (level) => {
@@ -115,6 +141,7 @@ export default function AccessibilityWidget() {
   const resetAll = () => {
     setActive({});
     setTextSize(0);
+    applyCursorStyle(false);
     document.documentElement.className = document.documentElement.className
       .split(" ").filter((c) => !c.startsWith("a11y-")).join(" ");
   };
