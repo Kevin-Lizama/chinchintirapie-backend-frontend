@@ -123,7 +123,7 @@ export default function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <p>© 2026 Chinchintirapie – Escuela Carnavalera · Hecho con 🎭 y ritmo</p>
+          <p>© 2026 Chinchintirapié – Escuela Carnavalera</p>
         </div>
       </footer>
   );

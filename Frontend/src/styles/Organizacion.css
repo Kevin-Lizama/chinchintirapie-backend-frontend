@@ -108,60 +108,20 @@
   padding: 5rem 2rem;
 }
 
-/* Base grid para Mobile (1 columna) */
+/* Base grid */
 .organizacion-gear-grid {
   display: grid;
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
   max-width: 1100px;
   margin: 0 auto;
-  grid-template-columns: 1fr;
-  grid-template-areas:
-    "autogestion"
-    "carinitos"
-    "investigacion"
-    "pedagogia"
-    "diseno"
-    "comunicaciones"
-    "protocolo";
-}
-
-/* Definición de Áreas */
-.area-autogestion { grid-area: autogestion; }
-.area-carinitos { grid-area: carinitos; }
-.area-investigacion { grid-area: investigacion; }
-.area-pedagogia { grid-area: pedagogia; }
-.area-diseno { grid-area: diseno; }
-.area-comunicaciones { grid-area: comunicaciones; }
-.area-protocolo { grid-area: protocolo; }
-
-/* Grid para Tablet (2 columnas) */
-@media (min-width: 768px) {
-  .organizacion-gear-grid {
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      "autogestion autogestion"
-      "carinitos carinitos"
-      "investigacion pedagogia"
-      "diseno comunicaciones"
-      "protocolo protocolo";
-  }
-}
-
-/* Grid para Desktop (3 columnas) */
-@media (min-width: 1024px) {
-  .organizacion-gear-grid {
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-areas:
-      "autogestion autogestion investigacion"
-      "carinitos carinitos pedagogia"
-      "diseno comunicaciones protocolo";
-  }
 }
 
 /* Estilos Generales de Cards */
 .organizacion-gear-card {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 3px solid rgba(255, 215, 0, 0.5);
   border-radius: 12px;
   padding: 1.8rem;
   color: #fff;
@@ -186,7 +146,7 @@
 
 .organizacion-gear-title {
   font-family: var(--font-titulo, sans-serif);
-  font-size: 1.15rem;
+  font-size: clamp(1.15rem, 2.5vw, 1.5rem);
   color: var(--amarillo-e, #FFD700);
   margin-top: 0;
   margin-bottom: 0.75rem;
@@ -196,35 +156,49 @@
 
 .organizacion-gear-desc {
   color: rgba(255, 255, 255, 0.8);
-  font-size: 0.95rem;
+  font-size: clamp(0.9rem, 2vw, 1rem);
   line-height: 1.5;
   margin: 0;
 }
 
-/* Jerarquía Específica (Desktop & Tablet) */
-@media (min-width: 768px) {
-  .area-autogestion {
-    padding: 2.2rem;
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(255, 255, 255, 0.2);
-  }
-  .area-autogestion .organizacion-gear-title {
-    font-size: 1.6rem;
-    margin-bottom: 1rem;
-  }
-  .area-autogestion .organizacion-gear-desc {
-    font-size: 1.05rem;
-    color: rgba(255, 255, 255, 0.9);
-  }
+.gear-header-override {
+  text-align: center;
+  margin-bottom: 3rem;
+}
 
-  .area-carinitos {
-    padding: 2rem;
-    background: rgba(255, 255, 255, 0.05);
-  }
-  .area-carinitos .organizacion-gear-title {
-    font-size: 1.35rem;
-    margin-bottom: 0.85rem;
-  }
+.gear-eyebrow {
+  display: block;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.gear-title {
+  font-family: var(--font-titulo, sans-serif);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: #fff;
+  margin: 0;
+}
+
+.gear-title span {
+  color: var(--amarillo-e, #FFD700);
+}
+
+.gear-divider {
+  width: 36px;
+  height: 3px;
+  background-color: var(--amarillo-e, #FFD700);
+  margin: 1.5rem auto;
+  border: none;
+}
+
+.gear-subtitle {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 /* -- Expanded Cards -- */
