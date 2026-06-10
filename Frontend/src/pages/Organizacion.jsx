@@ -90,7 +90,7 @@ export default function Organizacion() {
 
   return (
     <>
-      <Ticker text="⚙️ Ecosistema vivo · Tres cuerpos · Autogestión · Maquinaria cultural · Disciplina colectiva" />
+      <Ticker text="Ecosistema vivo · Tres cuerpos · Autogestión · Maquinaria cultural · Disciplina colectiva" />
       <PageHero
         badge="Ecosistema Vivo"
         title="ecosistema: la maquinaria detrás del latido"
@@ -117,30 +117,155 @@ export default function Organizacion() {
           </div>
         </section>
 
+        <style>{`
+          .custom-cuerpos-header h2 {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+          }
+          .custom-cuerpos-header p {
+            color: #999;
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+            margin-bottom: 3rem;
+          }
+          .custom-cuerpos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+          }
+          .custom-cuerpo-card {
+            background: #111;
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #222;
+          }
+          .custom-cuerpo-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+          }
+          .custom-img-container {
+            position: relative;
+            height: 260px;
+            width: 100%;
+          }
+          .custom-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+          .custom-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.9) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1.5rem;
+          }
+          .custom-badge {
+            align-self: flex-start;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+          }
+          .custom-title {
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 0;
+            text-align: left;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+          }
+          .custom-body {
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+          }
+          .custom-desc {
+            color: #ccc;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+            text-align: left;
+          }
+          .custom-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+          }
+          .custom-footer-text {
+            color: #666;
+            font-size: 0.95rem;
+            margin: 0;
+            font-weight: 500;
+          }
+          .custom-btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border-radius: 40px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: filter 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+          }
+          .custom-btn:hover {
+            filter: brightness(1.2);
+            transform: scale(1.02);
+          }
+          @media (max-width: 992px) {
+            .custom-cuerpos-grid {
+              grid-template-columns: repeat(2, 1fr);
+            }
+          }
+          @media (max-width: 768px) {
+            .custom-cuerpos-grid {
+              grid-template-columns: 1fr;
+            }
+          }
+        `}</style>
         <section className="organizacion-body" id="los-tres-cuerpos">
-          <div className="section-header reveal" style={{ textAlign: 'center' }}>
+          <div className="custom-cuerpos-header reveal" style={{ textAlign: 'center' }}>
             <h2>Los tres <span>cuerpos</span></h2>
-            <div className="deco-line"><span>🎭</span></div>
+            <div className="deco-line"></div>
             <p>El frente de acción que da vida a nuestra identidad en el espacio público.</p>
           </div>
-          <div className="organizacion-card-grid">
-            {CUERPOS.map(({ img, title, desc, category, color, contenidos, miembros }) => (
-              <article key={title} className="organizacion-card-expanded reveal">
-                <div className="card-header">
-                  <img src={img} alt={title} loading="lazy" className="card-header-img" />
-                  <div className="card-header-overlay">
-                    <h3 className="card-title">{title}</h3>
-                    <span className="card-category" style={{ backgroundColor: color }}>{category}</span>
+          <div className="custom-cuerpos-grid">
+            {CUERPOS.map(({ img, title, desc, category, color }) => (
+              <article key={title} className="custom-cuerpo-card reveal">
+                <div className="custom-img-container">
+                  <img src={img} alt={title} loading="lazy" />
+                  <div className="custom-overlay">
+                    <span className="custom-badge" style={{ backgroundColor: color }}>{category}</span>
+                    <h3 className="custom-title">{title}</h3>
                   </div>
                 </div>
-                <div className="card-body">
-                  <p className="card-desc">{desc}</p>
-                  
-
-
-                  <div className="card-footer">
-                    <p>¿Te interesa sumarte?</p>
-                    <Link to="/contacto" className="btn-inscripcion" style={{ backgroundColor: color }}>Ver inscripción</Link>
+                <div className="custom-body">
+                  <p className="custom-desc">{desc}</p>
+                  <div className="custom-footer">
+                    <p className="custom-footer-text">¿Te interesa sumarte?</p>
+                    <Link to="/contacto" className="custom-btn" style={{ backgroundColor: color }}>Ver inscripción</Link>
                   </div>
                 </div>
               </article>
@@ -149,14 +274,15 @@ export default function Organizacion() {
         </section>
 
         <section className="organizacion-gear-section">
-          <div className="section-header reveal">
-            <h2>El engranaje <span>interno</span></h2>
-            <div className="deco-line"><span>⚙️</span></div>
-            <p>Para que el arte explote en la calle, el trabajo en la sombra debe ser impecable.</p>
+          <div className="section-header reveal gear-header-override">
+            <span className="gear-eyebrow">ESTRUCTURA INTERNA</span>
+            <h2 style={{ color: '#FFD600' }}>El engranaje <span style={{ color: '#FFD600' }}>interno</span></h2>
+            <div className="gear-divider"></div>
+            <p className="gear-subtitle"><em>Para que el arte explote en la calle, el trabajo en la sombra debe ser impecable.</em></p>
           </div>
           <div className="organizacion-gear-grid">
-            {ENGRANAJES.map(({ title, desc, area }) => (
-              <article key={title} className={`organizacion-gear-card reveal area-${area}`}>
+            {ENGRANAJES.map(({ title, desc }) => (
+              <article key={title} className="organizacion-gear-card reveal">
                 <div className="organizacion-gear-content">
                   <h3 className="organizacion-gear-title">{title}</h3>
                   <p className="organizacion-gear-desc">{desc}</p>
