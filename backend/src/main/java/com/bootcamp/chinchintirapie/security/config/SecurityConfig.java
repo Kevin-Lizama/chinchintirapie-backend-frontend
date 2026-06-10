@@ -45,7 +45,9 @@ public class SecurityConfig {
                         // Endpoints públicos adicionales
                         .requestMatchers(HttpMethod.POST, "/api/contacto").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/articulos/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/articulos/*/view").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/multimedia/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/multimedia/*/view").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/health").permitAll()
                         .requestMatchers("/forgot-password").permitAll()
                         .requestMatchers("/reset-password").permitAll()

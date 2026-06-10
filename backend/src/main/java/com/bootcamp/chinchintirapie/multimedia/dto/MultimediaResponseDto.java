@@ -19,6 +19,7 @@ public record MultimediaResponseDto(
         LocalDateTime uploadedAt,
         LocalDateTime updatedAt,
         Long authorId,
-        String authorEmail
+        String authorEmail,
+        Long viewCount
 ) {
 }

@@ -104,6 +104,15 @@ const multimediaService = {
       method: 'DELETE',
     });
   },
+
+  /**
+   * Incrementar contador de visitas
+   */
+  async incrementViewCount(id) {
+    await apiFetch(`/multimedia/${id}/view`, {
+      method: 'POST',
+    });
+  },
 };
 
 export default multimediaService;

@@ -15,6 +15,7 @@ export default function CronicaDetail() {
       try {
         const data = await articuloService.fetchById(id);
         setCronica(data);
+        articuloService.incrementViewCount(id).catch(console.error);
       } catch (err) {
         setError(err.message);
       } finally {

@@ -138,4 +138,15 @@ public class MultimediaService {
         }
         multimediaRepository.deleteById(id);
     }
+
+    @Transactional
+    public void incrementViewCount(Long id) {
+        MultimediaEntity multimedia = multimediaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Multimedia no encontrada con ID: " + id));
+        if (multimedia.getViewCount() == null) {
+            multimedia.setViewCount(0L);
+        }
+        multimedia.setViewCount(multimedia.getViewCount() + 1);
+        multimediaRepository.save(multimedia);
+    }
 }

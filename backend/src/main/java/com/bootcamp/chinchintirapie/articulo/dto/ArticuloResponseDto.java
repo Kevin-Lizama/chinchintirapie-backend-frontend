@@ -15,6 +15,7 @@ public record ArticuloResponseDto(
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         Long authorId,
-        String authorEmail
+        String authorEmail,
+        Long viewCount
 ) {
 }

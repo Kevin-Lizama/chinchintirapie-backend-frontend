@@ -35,37 +35,42 @@ export default function Home() {
   useEffect(() => {
     const cargarContenido = async () => {
       try {
-        // Artículos: 2 noticias + 1 crónica más recientes
+        // Artículos: Traer todos y ordenar por más reciente
         const articulos = await articuloService.fetchAll();
         const ordenados = articulos.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
 
-        const noticias = ordenados
-          .filter((a) => a.type === 'NOTICIA')
-          .slice(0, 2);
-        setNoticiasRecientes(noticias);
+        // Noticias: Top 20 más recientes
+        const noticiasRecientes = ordenados.filter((a) => a.type === 'NOTICIA').slice(0, 20);
+        // Hero: la más reciente absoluta
+        const noticiaHero = noticiasRecientes.length > 0 ? noticiasRecientes[0] : null;
+        // Side: la más popular entre las restantes 19 recientes
+        const noticiasRestantes = noticiasRecientes.slice(1).sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0));
+        const noticiaSide = noticiasRestantes.length > 0 ? noticiasRestantes[0] : null;
+        
+        setNoticiasRecientes([noticiaHero, noticiaSide].filter(Boolean));
 
-        const cronica = ordenados
-          .filter((a) => a.type === 'CRONICA')
-          .slice(0, 1);
-        setCronicaReciente(cronica[0] || null);
+        // Crónicas: Top 20 más recientes, elegir la más popular
+        const cronicasRecientes = ordenados.filter((a) => a.type === 'CRONICA').slice(0, 20);
+        const cronicasPopulares = [...cronicasRecientes].sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0));
+        setCronicaReciente(cronicasPopulares.length > 0 ? cronicasPopulares[0] : null);
 
-        // Multimedia: 2 repos + 1 CEDOC más recientes
+        // Multimedia: Traer todos y ordenar por más reciente
         const multimedia = await multimediaService.fetchAll();
         const multOrdenada = multimedia.sort(
           (a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt)
         );
 
-        const repos = multOrdenada
-          .filter((m) => m.type === 'REPOSITORIO')
-          .slice(0, 2);
-        setReposDestacados(repos);
+        // Repositorios: Top 20 recientes, elegir los 2 más populares
+        const reposRecientes = multOrdenada.filter((m) => m.type === 'REPOSITORIO').slice(0, 20);
+        const reposPopulares = [...reposRecientes].sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0));
+        setReposDestacados(reposPopulares.slice(0, 2));
 
-        const cedoc = multOrdenada
-          .filter((m) => m.type === 'CEDOC')
-          .slice(0, 1);
-        setCedocDestacado(cedoc[0] || null);
+        // CEDOC: Top 20 recientes, elegir el más popular
+        const cedocRecientes = multOrdenada.filter((m) => m.type === 'CEDOC').slice(0, 20);
+        const cedocPopulares = [...cedocRecientes].sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0));
+        setCedocDestacado(cedocPopulares.length > 0 ? cedocPopulares[0] : null);
       } catch (error) {
         console.error('Error cargando contenido:', error);
       }
