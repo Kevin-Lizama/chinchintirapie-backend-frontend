@@ -84,4 +84,15 @@ public class ArticuloService {
         }
         articuloRepository.deleteById(id);
     }
+
+    @Transactional
+    public void incrementViewCount(Long id) {
+        ArticuloEntity articulo = articuloRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Artículo no encontrado con ID: " + id));
+        if (articulo.getViewCount() == null) {
+            articulo.setViewCount(0L);
+        }
+        articulo.setViewCount(articulo.getViewCount() + 1);
+        articuloRepository.save(articulo);
+    }
 }

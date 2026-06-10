@@ -79,6 +79,15 @@ const articuloService = {
       method: 'DELETE',
     });
   },
+
+  /**
+   * Incrementar contador de visitas
+   */
+  async incrementViewCount(id) {
+    await apiFetch(`/articulos/${id}/view`, {
+      method: 'POST',
+    });
+  },
 };
 
 export default articuloService;

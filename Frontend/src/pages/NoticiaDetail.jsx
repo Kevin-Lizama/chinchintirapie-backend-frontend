@@ -15,6 +15,7 @@ export default function NoticiaDetail() {
       try {
         const data = await articuloService.fetchById(id);
         setNoticia(data);
+        articuloService.incrementViewCount(id).catch(console.error);
       } catch (err) {
         setError(err.message);
       } finally {

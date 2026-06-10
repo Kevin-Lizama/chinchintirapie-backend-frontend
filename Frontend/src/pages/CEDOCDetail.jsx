@@ -14,6 +14,7 @@ export default function CEDOCDetail() {
       try {
         const data = await multimediaService.fetchById(id);
         setArticle(data);
+        multimediaService.incrementViewCount(id).catch(console.error);
       } catch (err) {
         setError(err.message);
       } finally {

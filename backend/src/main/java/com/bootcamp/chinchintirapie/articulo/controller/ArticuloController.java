@@ -49,4 +49,9 @@ public class ArticuloController {
     public void delete(@PathVariable Long id) {
         articuloService.delete(id);
     }
+
+    @PostMapping("/{id}/view")
+    public void incrementViewCount(@PathVariable Long id) {
+        articuloService.incrementViewCount(id);
+    }
 }

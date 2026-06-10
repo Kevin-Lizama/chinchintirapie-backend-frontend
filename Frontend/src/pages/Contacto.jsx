@@ -9,7 +9,7 @@ const CHIPS = [
   'Quiero inscribirme en un taller o curso',
   'Quiero enviar un aporte al Archivo',
   'Quiero hacer una consulta sobre el repertorio',
-  'Quiero hacer una cotizaciòn',
+  'Quiero hacer una cotización',
   'Otro',
 ];
 
@@ -53,7 +53,7 @@ export default function Contacto() {
     if (!autoPlay) return;
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 4000);
+    }, 4500);
     return () => clearInterval(interval);
   }, [autoPlay]);
 
@@ -70,15 +70,22 @@ export default function Contacto() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
-    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
+      return;
+    }
+
     setErrors({});
     setServerError('');
     setLoading(true);
+
     const payload = Object.keys(form).reduce((acc, key) => {
       const val = form[key];
-      acc[key] = (typeof val === 'string' && val.trim() === '') ? null : val;
+      acc[key] = typeof val === 'string' && val.trim() === '' ? null : val;
       return acc;
     }, {});
+
     try {
       await contactoService.enviarMensaje(payload);
       setSubmitted(true);
@@ -104,167 +111,214 @@ export default function Contacto() {
     setSelectedChip('');
     setErrors({});
     setSubmitted(false);
+    setServerError('');
   };
 
-  const prevSlide = () => setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
+  const prevSlide = () =>
+    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+
+  const nextSlide = () =>
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
 
   return (
     <>
-      <Ticker text="🎭 Contáctanos · Súmate al carnaval · Ritmo, comunidad y fiesta · Chinchintirapie" />
+      <Ticker text="Contáctanos · Súmate al carnaval · Ritmo, comunidad y fiesta · Chinchintirapie" />
 
-      <PageHero
-        badge="✉ Escríbenos"
-        titleEm="Contacto"
-        title=""
-        description="¿Quieres inscribirte, participar o conocernos? Escríbenos y te respondemos con alegría carnavalera."
-      />
+      <section className="contacto-hero-wrap">
+        <PageHero
+          badge="Escríbenos"
+          titleEm="Contacto"
+        />
+      </section>
 
       <div className="contacto-wrapper">
-        <div className="contacto-container">
-
-          {/* ── Carrusel ── */}
-          <div className="contacto-carousel">
-            <div className="carousel-frame">
-              <img
-                src={slides[currentSlide].image}
-                alt={slides[currentSlide].title}
-              />
-              <div className="carousel-caption">
-                <h3>{slides[currentSlide].title}</h3>
-                <p>{slides[currentSlide].text}</p>
-                <div className="carousel-controls">
-                  <button type="button" className="carousel-btn" onClick={prevSlide} aria-label="Anterior">‹</button>
-                  <button
-                    type="button"
-                    className="carousel-btn pause"
-                    onClick={() => setAutoPlay((p) => !p)}
-                    aria-label={autoPlay ? 'Pausar' : 'Reanudar'}
-                  >
-                    {autoPlay ? '❚❚' : '▶'}
-                  </button>
-                  <button type="button" className="carousel-btn" onClick={nextSlide} aria-label="Siguiente">›</button>
+        <div className="contacto-shell">
+          <div className="contacto-container">
+            <div className="contacto-carousel-col">
+              <div
+                className="contacto-carousel-card"
+                aria-label="Galería de actividades"
+                onMouseEnter={() => setAutoPlay(false)}
+                onMouseLeave={() => setAutoPlay(true)}
+              >
+                <div className="contacto-carousel-media">
+                  <img
+                    src={slides[currentSlide].image}
+                    alt={slides[currentSlide].title}
+                  />
+                  <div className="carousel-overlay" />
                 </div>
-                <div className="carousel-dots">
-                  {slides.map((_, idx) => (
+
+                <div className="contacto-carousel-body">
+                  <span className="carousel-kicker">Galería</span>
+                  <h3>{slides[currentSlide].title}</h3>
+                  <p>{slides[currentSlide].text}</p>
+
+                  <div className="carousel-bottom">
+                    <div className="carousel-dots" aria-label="Indicadores del carrusel">
+                      {slides.map((_, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          className={`carousel-dot${currentSlide === idx ? ' active' : ''}`}
+                          onClick={() => setCurrentSlide(idx)}
+                          aria-label={`Ir a imagen ${idx + 1}`}
+                        />
+                      ))}
+                    </div>
+
+                    <div className="carousel-controls">
+                      <button
+                        type="button"
+                        className="carousel-btn"
+                        onClick={prevSlide}
+                        aria-label="Imagen anterior"
+                      >
+                        ‹
+                      </button>
+
+                      <button
+                        type="button"
+                        className="carousel-btn pause"
+                        onClick={() => setAutoPlay((prev) => !prev)}
+                        aria-label={autoPlay ? 'Pausar carrusel' : 'Reanudar carrusel'}
+                      >
+                        {autoPlay ? 'Pausa' : 'Reanudar'}
+                      </button>
+
+                      <button
+                        type="button"
+                        className="carousel-btn"
+                        onClick={nextSlide}
+                        aria-label="Imagen siguiente"
+                      >
+                        ›
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {submitted ? (
+              <div className="success-screen">
+                <h3>Tu mensaje fue enviado correctamente</h3>
+                <p>Gracias por escribir a Chinchintirapie. Te responderemos pronto.</p>
+                <button type="button" className="btn-reset" onClick={resetForm}>
+                  Enviar otro mensaje
+                </button>
+              </div>
+            ) : (
+              <div className="contacto-panel">
+                <div className="contacto-panel-header">
+                  <h2 className="contacto-title">
+                    <span>Háblanos</span> de ti
+                  </h2>
+                  <p className="contacto-description">
+                    ¿Tienes preguntas o quieres saber más sobre nuestros talleres y actividades? Completa el formulario y te responderemos lo antes posible.
+                  </p>
+                </div>
+
+                <div className="chips-wrap">
+                  {CHIPS.map((chip) => (
                     <button
-                      key={idx}
+                      key={chip}
                       type="button"
-                      className={`carousel-dot${currentSlide === idx ? ' active' : ''}`}
-                      onClick={() => setCurrentSlide(idx)}
-                      aria-label={`Ir a imagen ${idx + 1}`}
-                    />
+                      className={`chip${selectedChip === chip ? ' active' : ''}`}
+                      onClick={() => handleChip(chip)}
+                    >
+                      {chip}
+                    </button>
                   ))}
                 </div>
-              </div>
-            </div>
-          </div>
 
-          {/* ── Formulario ── */}
-          {submitted ? (
-            <div className="success-screen">
-              <span className="success-icon">🎉</span>
-              <h3>¡Tu mensaje ya está bailando con nosotros!</h3>
-              <p>Gracias por escribir a Chinchintirapie. Te responderemos pronto.</p>
-              <button type="button" className="btn-reset" onClick={resetForm}>
-                ✉ Enviar otro mensaje
-              </button>
-            </div>
-          ) : (
-            <div className="contacto-panel">
-              <h2 className="contacto-title">
-                <span>Háblanos</span> de ti
-              </h2>
-              <p className="contacto-subtitle">
-                📧 <a href="mailto:chinchintirapie@gmail.com">chinchintirapie@gmail.com</a>
-              </p>
+                <form className="contacto-form" onSubmit={handleSubmit} noValidate>
+                  {serverError && <div className="server-error">{serverError}</div>}
 
-              {/* Chips de asunto */}
-              <div className="chips-wrap">
-                {CHIPS.map((chip) => (
-                  <button
-                    key={chip}
-                    type="button"
-                    className={`chip${selectedChip === chip ? ' active' : ''}`}
-                    onClick={() => handleChip(chip)}
-                  >
-                    {chip}
-                  </button>
-                ))}
-              </div>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="nombre">
+                        ¿Cómo te llamas? <span className="required">*</span>
+                      </label>
+                      <input
+                        id="nombre"
+                        type="text"
+                        value={form.nombre}
+                        onChange={handleChange('nombre')}
+                        placeholder="Tu nombre completo"
+                        className={errors.nombre ? 'error' : ''}
+                      />
+                      {errors.nombre && <span className="field-error">{errors.nombre}</span>}
+                    </div>
 
-              <form className="contacto-form" onSubmit={handleSubmit} noValidate>
-                {serverError && (
-                  <div className="server-error">⚠️ {serverError}</div>
-                )}
+                    <div className="form-group">
+                      <label htmlFor="email">
+                        ¿Dónde te respondemos? <span className="required">*</span>
+                      </label>
+                      <input
+                        id="email"
+                        type="email"
+                        value={form.email}
+                        onChange={handleChange('email')}
+                        placeholder="tu@email.com"
+                        className={errors.email ? 'error' : ''}
+                      />
+                      {errors.email && <span className="field-error">{errors.email}</span>}
+                    </div>
+                  </div>
 
-                <div className="form-row">
                   <div className="form-group">
-                    <label>¿Cómo te llamas? <span className="required">*</span></label>
+                    <label htmlFor="telefono">
+                      Teléfono de contacto <span className="required">*</span>
+                    </label>
                     <input
+                      id="telefono"
+                      type="tel"
+                      value={form.telefono}
+                      onChange={handleChange('telefono')}
+                      placeholder="+56 9 1234 5678"
+                      className={errors.telefono ? 'error' : ''}
+                    />
+                    {errors.telefono && <span className="field-error">{errors.telefono}</span>}
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="asunto">
+                      Asunto <span className="required">*</span>
+                    </label>
+                    <input
+                      id="asunto"
                       type="text"
-                      value={form.nombre}
-                      onChange={handleChange('nombre')}
-                      placeholder="Tu nombre completo"
-                      className={errors.nombre ? 'error' : ''}
+                      value={form.asunto}
+                      onChange={handleChange('asunto')}
+                      placeholder="Selecciona un asunto o escríbelo aquí"
+                      className={errors.asunto ? 'error' : ''}
                     />
-                    {errors.nombre && <span className="field-error">⚠ {errors.nombre}</span>}
+                    {errors.asunto && <span className="field-error">{errors.asunto}</span>}
                   </div>
+
                   <div className="form-group">
-                    <label>¿Dónde te respondemos? <span className="required">*</span></label>
-                    <input
-                      type="email"
-                      value={form.email}
-                      onChange={handleChange('email')}
-                      placeholder="tu@email.com"
-                      className={errors.email ? 'error' : ''}
+                    <label htmlFor="mensaje">
+                      Tu mensaje <span className="required">*</span>
+                    </label>
+                    <textarea
+                      id="mensaje"
+                      value={form.mensaje}
+                      onChange={handleChange('mensaje')}
+                      rows={5}
+                      placeholder="Escríbenos tu mensaje y te responderemos pronto."
+                      className={errors.mensaje ? 'error' : ''}
                     />
-                    {errors.email && <span className="field-error">⚠ {errors.email}</span>}
+                    {errors.mensaje && <span className="field-error">{errors.mensaje}</span>}
                   </div>
-                </div>
 
-                <div className="form-group">
-                  <label>Teléfono de contacto <span className="required">*</span></label>
-                  <input
-                    type="tel"
-                    value={form.telefono}
-                    onChange={handleChange('telefono')}
-                    placeholder="+56 9 1234 5678"
-                    className={errors.telefono ? 'error' : ''}
-                  />
-                  {errors.telefono && <span className="field-error">⚠ {errors.telefono}</span>}
-                </div>
-
-                <div className="form-group">
-                  <label>Asunto <span className="required">*</span></label>
-                  <input
-                    type="text"
-                    value={form.asunto}
-                    onChange={handleChange('asunto')}
-                    placeholder="Selecciona un chip arriba o escribe tu asunto"
-                    className={errors.asunto ? 'error' : ''}
-                  />
-                  {errors.asunto && <span className="field-error">⚠ {errors.asunto}</span>}
-                </div>
-
-                <div className="form-group">
-                  <label>Tu mensaje <span className="required">*</span></label>
-                  <textarea
-                    value={form.mensaje}
-                    onChange={handleChange('mensaje')}
-                    rows={5}
-                    placeholder="Escríbenos tu mensaje y te responderemos con alegría carnavalera..."
-                    className={errors.mensaje ? 'error' : ''}
-                  />
-                  {errors.mensaje && <span className="field-error">⚠ {errors.mensaje}</span>}
-                </div>
-
-                <button type="submit" className="submit-btn" disabled={loading}>
-                  {loading ? '🎭 Enviando...' : '🎭 Enviar Mensaje'}
-                </button>
-              </form>
-            </div>
-          )}
+                  <button type="submit" className="submit-btn" disabled={loading}>
+                    {loading ? 'Enviando...' : 'Enviar mensaje'}
+                  </button>
+                </form>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </>

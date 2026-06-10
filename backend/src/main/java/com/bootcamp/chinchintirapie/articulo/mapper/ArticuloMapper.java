@@ -20,7 +20,8 @@ public class ArticuloMapper {
                 articulo.getCreatedAt(),
                 articulo.getUpdatedAt(),
                 articulo.getUploadedBy().getId(),
-                articulo.getUploadedBy().getEmail()
+                articulo.getUploadedBy().getEmail(),
+                articulo.getViewCount()
         );
     }
 }

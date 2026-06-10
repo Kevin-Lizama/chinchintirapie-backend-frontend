@@ -23,7 +23,8 @@ public class MultimediaMapper {
                 multimedia.getUploadedAt(),
                 multimedia.getUpdatedAt(),
                 multimedia.getUploadedBy().getId(),
-                multimedia.getUploadedBy().getEmail()
+                multimedia.getUploadedBy().getEmail(),
+                multimedia.getViewCount()
         );
     }
 }

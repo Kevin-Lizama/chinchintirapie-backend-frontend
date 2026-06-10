@@ -59,6 +59,10 @@ public class MultimediaEntity {
 
     private LocalDateTime updatedAt;
 
+    @Column(name = "view_count")
+    @Builder.Default
+    private Long viewCount = 0L;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
     private UserEntity uploadedBy;

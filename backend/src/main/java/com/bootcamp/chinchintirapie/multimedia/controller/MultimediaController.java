@@ -77,4 +77,9 @@ public class MultimediaController {
     public void delete(@PathVariable Long id) {
         multimediaService.delete(id);
     }
+
+    @PostMapping("/{id}/view")
+    public void incrementViewCount(@PathVariable Long id) {
+        multimediaService.incrementViewCount(id);
+    }
 }

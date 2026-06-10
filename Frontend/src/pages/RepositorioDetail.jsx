@@ -16,6 +16,7 @@ export default function RepositorioDetail() {
       try {
         const data = await multimediaService.fetchById(id);
         setItem(data);
+        multimediaService.incrementViewCount(id).catch(console.error);
       } catch (err) {
         setError(err.message);
       } finally {
