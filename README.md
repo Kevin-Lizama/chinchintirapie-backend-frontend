@@ -12,7 +12,7 @@
 | 🔄 Scrum Master | Brandon Inostroza |
 | 🎨 UX/UI · Dev Team | Natasha Cruz |
 | 💻 Dev Team | Matías Celis |
-| 💻 Dev Team | Camila Baldevenito |
+| 💻 Dev Team | Camila Baldebenito |
 | 💻 Dev Team | Valentina Llantén |
 
 ---
@@ -201,4 +201,4 @@ El proyecto usa CI/CD con GitHub Actions.
 
 ## 📄 Licencia
 
-Proyecto académico desarrollado para la Escuela Carnavalera Chinchintirapie. Todos los derechos reservados © 2025.
+Proyecto académico desarrollado para la Escuela Carnavalera Chinchintirapie. Todos los derechos reservados © 2026.
