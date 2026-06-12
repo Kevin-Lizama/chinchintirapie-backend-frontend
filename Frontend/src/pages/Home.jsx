@@ -118,14 +118,14 @@ export default function Home() {
         <section className="cards-section" id="hitos">
           <div className="section-header reveal">
             <h2>Lo que hace <span>vibrar</span> la escuela</h2>
-            <div className="deco-line"><span>🎶</span></div>
+            <div className="deco-line"><span></span></div>
             <p>Archivo, crónicas y ensayos que documentan 20 años de fiesta comunitaria.</p>
           </div>
 
           {/* ── Noticias Recientes ── */}
           <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
             <div className="home-subsection-header reveal">
-              <div className="home-subsection-label">📰 Noticias Recientes</div>
+              <div className="home-subsection-label"> Noticias Recientes</div>
               <div className="home-subsection-line"></div>
               <div className="home-subsection-actions">
                 <Link to="/noticias" className="btn-ghost">Todas las Noticias</Link>
@@ -169,7 +169,7 @@ export default function Home() {
           {/* ── Multimedias Destacados ── */}
           <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
             <div className="home-subsection-header reveal">
-              <div className="home-subsection-label">📂 Multimedias Destacados</div>
+              <div className="home-subsection-label"> Multimedias Destacados</div>
               <div className="home-subsection-line"></div>
               <div className="home-subsection-actions">
                 <Link to="/repositorio" className="btn-ghost">Repositorio Audiovisual</Link>
@@ -218,7 +218,7 @@ export default function Home() {
               <div className="años-badge-ring">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                   <path id="circ" d="M 100,100 m -80,0 a 80,80 0 1,1 160,0 a 80,80 0 1,1 -160,0" fill="none" />
-                  <text style={{ fontFamily: 'var(--font-titulo)', fill: 'var(--rojo)' }} fontSize="14" letterSpacing="4">
+                  <text style={{ fontFamily: 'var(--font-titulo)', fill: 'var(--amarillo-e)' }} fontSize="14" letterSpacing="4">
                     <textPath href="#circ">★ CHINCHINTIRAPIÉ ★ ESCUELA CARNAVALERA ★ DESDE 2004 ★ </textPath>
                   </text>
                 </svg>
@@ -251,22 +251,22 @@ export default function Home() {
         {/* TALLERES */}
         <section className="talleres-section" id="talleres">
           <div className="section-header reveal">
-            <h2 style={{ color: 'var(--blanco)' }}>Nuestros <span style={{ color: 'var(--amarillo)' }}>Talleres</span></h2>
+            <h2 >Nuestros <span style={{ color: 'var(--morado-o)' }}>Talleres</span></h2>
             <div className="deco-line"><span></span></div>
             <p>Descubre los tres pilares fundamentales de nuestra escuela.</p>
           </div>
           <div className="talleres-mini-grid">
-            {TALLERES.map(({ img, title, phrase }) => (
-             <div className="taller-mini-card reveal" key={title}>
-              <div className="taller-icon">
-                <img src={img} alt={title} />
-              </div>
-              <div className="taller-info">
-                <h3>{title}</h3>
-                <p>{phrase}</p>
-              </div>
-            </div>
-          ))}
+                {TALLERES.map(({ img, title, phrase }) => (
+                  <div className="taller-mini-card reveal" key={title}>
+                    <div className="taller-icon">
+                      <img src={img} alt={title} />
+                    </div>
+                    <div className="taller-info">
+                      <h3>{title}</h3>
+                      <p>{phrase}</p>
+                    </div>
+                  </div>
+                ))}
           </div>
           <div className="talleres-action reveal" style={{ textAlign: 'center', marginTop: '3rem' }}>
             <a href="/organizacion#los-tres-cuerpos" className="btn btn-primary">Ver Organización</a>
