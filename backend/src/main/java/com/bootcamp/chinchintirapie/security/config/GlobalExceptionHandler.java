@@ -78,6 +78,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, Object> handleRuntimeException(RuntimeException ex) {
+        ex.printStackTrace(); // Agregado para ver el error en los logs del servidor
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
