@@ -17,7 +17,6 @@ import com.bootcamp.chinchintirapie.storage.model.StorageFolder;
 @RestController
 @RequestMapping("/api/upload")
 @RequiredArgsConstructor
-@ConditionalOnBean(S3Client.class)
 public class StorageController {
 
     private final StorageService storageService;
