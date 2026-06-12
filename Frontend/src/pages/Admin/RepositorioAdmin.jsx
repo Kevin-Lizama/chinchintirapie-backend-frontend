@@ -420,14 +420,14 @@ function RepositorioAdmin() {
                 </div>
 
                 <div style={{ display: 'flex', gap: '10px' }}>
-                    <button type="submit" disabled={loading || uploadingFile || uploadingThumb} style={{ background: 'var(--purpura)', color: 'white', padding: '10px 20px', borderRadius: '5px', cursor: 'pointer', border: 'none', fontWeight: 'bold' }}>
+                    <button type="submit" disabled={loading || uploadingFile || uploadingThumb || uploadingGallery} style={{ background: 'var(--purpura)', color: 'white', padding: '10px 20px', borderRadius: '5px', cursor: 'pointer', border: 'none', fontWeight: 'bold' }}>
                         {loading ? 'Guardando...' : (itemAEditar ? 'Guardar Cambios' : 'Publicar')}
                     </button>
 
                     {itemAEditar && (
                         <button
                             type="button"
-                            disabled={loading || uploadingFile || uploadingThumb}
+                            disabled={loading || uploadingFile || uploadingThumb || uploadingGallery}
                             onClick={handleDelete}
                             style={{ background: 'var(--rojo)', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}
                         >

@@ -1,5 +1,6 @@
 package com.bootcamp.chinchintirapie.contacto.service;
 
+import com.bootcamp.chinchintirapie.auth.service.EmailService;
 import com.bootcamp.chinchintirapie.contacto.dto.ContactoRequestDto;
 import com.bootcamp.chinchintirapie.contacto.dto.ContactoResponseDto;
 import com.bootcamp.chinchintirapie.contacto.mapper.ContactoMapper;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ContactoService {
 
     private final ContactoRepository contactoRepository;
+    private final EmailService emailService;
 
     @Transactional
     public ContactoResponseDto create(ContactoRequestDto request) {
@@ -26,6 +28,7 @@ public class ContactoService {
                 .build();
 
         ContactoEntity savedContacto = contactoRepository.save(contacto);
+        emailService.sendContactNotificationEmail(savedContacto);
         return ContactoMapper.toResponseDto(savedContacto);
     }
 }

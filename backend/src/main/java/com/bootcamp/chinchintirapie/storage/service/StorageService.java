@@ -15,7 +15,6 @@ import com.bootcamp.chinchintirapie.storage.model.StorageFolder;
 
 @Service
 @RequiredArgsConstructor
-@ConditionalOnBean(S3Client.class)
 public class StorageService {
 
     private final S3Client s3Client;

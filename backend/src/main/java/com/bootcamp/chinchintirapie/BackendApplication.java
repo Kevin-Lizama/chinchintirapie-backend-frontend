@@ -13,8 +13,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 public class BackendApplication {
 
     public static void main(String[] args) {
+        String envDir = java.nio.file.Files.exists(java.nio.file.Paths.get(".env")) ? "./" : "../";
         Dotenv dotenv = Dotenv.configure()
-                .directory("./")
+                .directory(envDir)
                 .ignoreIfMissing()
                 .load();
 

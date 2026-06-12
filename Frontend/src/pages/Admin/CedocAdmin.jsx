@@ -116,6 +116,12 @@ function CedocAdmin() {
             categories: selectedCategories
         };
 
+        if (!form.url) {
+            setError("Debes subir un archivo principal o ingresar un enlace de YouTube.");
+            setLoading(false);
+            return;
+        }
+
         try {
             if (itemAEditar?.id) {
                 await multimediaService.update(itemAEditar.id, payload);

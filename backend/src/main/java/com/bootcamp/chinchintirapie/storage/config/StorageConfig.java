@@ -24,8 +24,13 @@ public class StorageConfig {
     private String accountId;
 
     @Bean
-    @ConditionalOnProperty(prefix = "cloudflare.r2", name = "access-key", matchIfMissing = false)
     public S3Client s3Client() {
+        if (accessKey == null || accessKey.isBlank() || 
+            secretKey == null || secretKey.isBlank() || 
+            accountId == null || accountId.isBlank()) {
+            return null; // Devuelve nulo si no están configurados
+        }
+
         AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
         String endpoint = String.format("https://%s.r2.cloudflarestorage.com", accountId);
 
