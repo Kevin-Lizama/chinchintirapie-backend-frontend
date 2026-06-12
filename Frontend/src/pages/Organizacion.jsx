@@ -123,9 +123,10 @@ export default function Organizacion() {
             font-weight: 800;
             margin-bottom: 0.5rem;
             text-transform: uppercase;
+            color: #FFD700;
           }
           .custom-cuerpos-header p {
-            color: #999;
+            color: #FFD700;
             font-size: 1.1rem;
             margin-top: 0.5rem;
             margin-bottom: 3rem;
@@ -245,6 +246,7 @@ export default function Organizacion() {
             }
           }
         `}</style>
+
         <section className="organizacion-body" id="los-tres-cuerpos">
           <div className="custom-cuerpos-header reveal" style={{ textAlign: 'center' }}>
             <h2>Los tres <span>cuerpos</span></h2>
@@ -276,7 +278,7 @@ export default function Organizacion() {
         <section className="organizacion-gear-section">
           <div className="section-header reveal gear-header-override">
             <span className="gear-eyebrow">ESTRUCTURA INTERNA</span>
-            <h2 style={{ color: '#FFD600' }}>El engranaje <span style={{ color: '#FFD600' }}>interno</span></h2>
+            <h2 style={{ color: 'var(--morado-o)' }}>El engranaje <span style={{ color: 'var(--morado-o)' }}>interno</span></h2>
             <div className="gear-divider"></div>
             <p className="gear-subtitle"><em>Para que el arte explote en la calle, el trabajo en la sombra debe ser impecable.</em></p>
           </div>

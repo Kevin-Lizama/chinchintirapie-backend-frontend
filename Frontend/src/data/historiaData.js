@@ -1,5 +1,5 @@
 export const TIMELINE = [
-  { year: '2004', text: 'Fundación de Chinchintirapie. Primeros ensayos en Nono 380 con 12 integrantes.' },
+  { year: '2006', text: 'Fundación de Chinchintirapie. Primeros ensayos en Nono 380 con 12 integrantes.' },
   { year: '2007', text: 'Primer desfile callejero oficial. Nace el formato de carnaval barrial con tres cuerpos.' },
   { year: '2010', text: 'Se formaliza la escuela con talleres permanentes de percusión, danza y vestuario.' },
   { year: '2012', text: 'Primera investigación académica sobre la murga. Alianza con universidad local.' },
