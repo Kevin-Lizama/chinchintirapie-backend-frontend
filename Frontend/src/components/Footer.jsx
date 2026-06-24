@@ -1,7 +1,37 @@
+/*
+ * ============================================================
+ * FOOTER.JSX — Pie de Página
+ * ============================================================
+ * Aparece en TODAS las páginas (excepto login/password).
+ *
+ * ESTRUCTURA VISUAL (grid de 4 columnas en desktop):
+ *   [Brand + Redes]  [Escuela]  [Archivo]  [Contacto]
+ *   ─────────────── © 2026 Chinchintirapié ──────────────
+ *
+ * En móvil se apila en 2 columnas (tablet) y luego 1 columna (celular).
+ *
+ * ESTILOS: Footer.css
+ *
+ * DATOS:
+ *   Los links del footer vienen de /data/navigation.js:
+ *   - FOOTER_LINKS.escuela → Links de la columna "Escuela"
+ *   - FOOTER_LINKS.archivo → Links de la columna "Archivo"
+ *   - FOOTER_LINKS.contacto → Links de la columna "Contacto"
+ *   - SOCIAL_LINKS → Iconos de redes sociales (Facebook, Instagram, YouTube, Twitter)
+ *
+ *   Para agregar/quitar links del footer, se edita /data/navigation.js
+ * ============================================================
+ */
+
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Footer.css';
 import { FOOTER_LINKS, SOCIAL_LINKS } from '../data/navigation';
 
+/* ── Íconos SVG de Redes Sociales ──
+   Se renderizan inline (no como imágenes). Si la diseñadora quiere
+   cambiar un ícono, se reemplaza el SVG correspondiente aquí.
+   El color lo hereda de CSS (fill="currentColor").
+*/
 const ICONS = {
   Facebook: (
       <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
@@ -27,21 +57,29 @@ const ICONS = {
   ),
 };
 
+/*
+ * ── FooterLink (componente interno) ──
+ * Renderiza un link del footer. Maneja 3 casos:
+ *   1. href: link externo (ej: mailto:, tel:) → usa <a>
+ *   2. to con #: link con ancla (ej: /#talleres) → navega + hace scroll
+ *   3. to sin #: link interno normal (ej: /historia) → usa <Link>
+ */
 function FooterLink({ label, to, href }) {
   const navigate = useNavigate();
 
+  // Caso 1: Link externo (email, teléfono, sitio externo)
   if (href) {
     return <a href={href}>{label}</a>;
   }
 
-  // Handle hash links like "/#talleres" or "/tienda#donaciones"
+  // Caso 2: Link con ancla (ej: "/#talleres" → navega al home y luego scrollea)
   if (to && to.includes('#')) {
     const [path, hash] = to.split('#');
     const handleClick = (e) => {
       e.preventDefault();
       const targetPath = path || '/';
       navigate(targetPath);
-      // Wait for navigation and DOM to update, then scroll
+      // Espera 100ms a que la página cargue, luego scrollea al elemento
       setTimeout(() => {
         const el = document.getElementById(hash);
         if (el) {
@@ -52,21 +90,31 @@ function FooterLink({ label, to, href }) {
     return <a href={to} onClick={handleClick}>{label}</a>;
   }
 
+  // Caso 3: Link interno normal
   return <Link to={to}>{label}</Link>;
 }
 
+/*
+ * ── Footer (componente principal) ──
+ * Estilos: Footer.css
+ */
 export default function Footer() {
   return (
       <footer>
+        {/* Grid de 4 columnas (responsive) — Estilos: .footer-grid */}
         <div className="footer-grid">
 
-          {/* Brand */}
+          {/* ── Columna 1: Brand + Redes Sociales ──
+              Nombre grande "Chinchintirapié" + texto descriptivo + íconos sociales.
+              Estilos: .footer-brand, .brand-name, .social-row, .social-btn
+          */}
           <div className="footer-brand">
             <span className="brand-name">Chinchintirapié</span>
             <p>
               Escuela carnavalera comprometida con la cultura popular latinoamericana.
               Veinte años haciendo la fiesta en la calle junto a la comunidad.
             </p>
+            {/* Íconos de redes sociales — datos en /data/navigation.js → SOCIAL_LINKS */}
             <div className="social-row">
               {SOCIAL_LINKS.map(({ href, label }) => (
 
@@ -76,7 +124,6 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                style={{ color: 'var(--blanco)' }}
                 >
               {ICONS[label]}
                 </a>
@@ -84,7 +131,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Escuela */}
+          {/* ── Columna 2: Links "Escuela" ── */}
           <div className="footer-col">
             <h4>Escuela</h4>
             <ul>
@@ -96,7 +143,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Archivo */}
+          {/* ── Columna 3: Links "Archivo" ── */}
           <div className="footer-col">
             <h4>Archivo</h4>
             <ul>
@@ -108,7 +155,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contacto */}
+          {/* ── Columna 4: Links "Contacto" ── */}
           <div className="footer-col">
             <h4>Contacto</h4>
             <ul>
@@ -122,8 +169,10 @@ export default function Footer() {
 
         </div>
 
+        {/* ── Línea de Copyright + Acceso Admin ── */}
         <div className="footer-bottom">
           <p>© 2026 Chinchintirapié – Escuela Carnavalera</p>
+          <Link to="/login" className="footer-admin-link">Acceso administradores</Link>
         </div>
       </footer>
   );

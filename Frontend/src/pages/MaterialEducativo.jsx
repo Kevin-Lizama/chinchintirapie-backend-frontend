@@ -91,7 +91,7 @@ export default function MaterialEducativo() {
           {!loading && !error && filtered.map((item) => (
             <Link to={`/material-educativo/${item.id}`} key={item.id} className="material-link">
               <article className="edu-card reveal">
-                <div className="edu-card-top" style={item.url ? { padding: 0, overflow: 'hidden', background: 'transparent' } : {}}>
+                <div className={`edu-card-top${item.url ? ' edu-card-top--has-content' : ''}`}>
                   <MediaThumbnail url={item.url} thumbnailUrl={item.thumbnailUrl} alt={item.title} typeEmoji="✏️" />
                 </div>
                 <div className="edu-card-body">

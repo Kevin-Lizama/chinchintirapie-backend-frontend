@@ -1,46 +1,100 @@
+/*
+ * ============================================================
+ * GLOBAL.CSS — Sistema de Diseño de Chinchintirapié
+ * ============================================================
+ * Este es el archivo MÁS IMPORTANTE de toda la app.
+ * Aquí se definen los colores, fuentes, bordes, sombras y
+ * componentes base que se usan en TODAS las páginas.
+ *
+ * Si la diseñadora quiere cambiar un color o una fuente,
+ * se cambia AQUÍ y se actualiza en toda la app automáticamente.
+ * ============================================================
+ */
+
+/* ── Fuentes de Google ──
+   Changa One: para títulos grandes y llamativos (tipo carnaval)
+   Bricolage Grotesque: para texto de lectura (párrafos, botones)
+   Si la diseñadora quiere cambiar la tipografía, se cambia la URL
+   y luego los nombres en las variables --font-titulo y --font-texto
+*/
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Changa+One&display=swap');
 
+/*
+ * ── VARIABLES DE DISEÑO (Design Tokens) ──
+ * Estas variables se usan en TODO el sitio.
+ * Para cambiar un color en toda la app, solo se cambia aquí.
+ *
+ * CÓMO SE USAN: en cualquier .css escribes var(--nombre-variable)
+ * Ejemplo: color: var(--rojo);  →  pone el color #BE003C
+ */
 :root {
-  --font-titulo: 'Changa One', cursive;
-  --font-texto: 'Bricolage Grotesque', sans-serif;
+  /* — Fuentes — */
+  --font-titulo: 'Changa One', cursive;   /* Títulos, badges, botones */
+  --font-texto: 'Bricolage Grotesque', sans-serif; /* Párrafos, menús, texto general */
 
-  --rojo: #BE003C;
-  --naranja: #FA9A3E;
-  --amarillo: #EFC600;
-  --verde: #FA9A3E;
-  --turquesa: #EFC600;
-  --dorado: #EFC600;
-  --crema: #FFFFFF;
-  --oscuro: #BE003C;
-  --sombra: rgba(190, 0, 60, 0.16);
-  --purpura: #BE003C;
-  --rojo-oscuro: #93002c;
-  --color-acento: rgba(190, 0, 60, 0.18);
-  --cian: #EFC600;
-  --amarillo-e: #EFC600;
-  --morado-o: #BE003C;
-  --beige-c: #FFFFFF;
-  --blanco: #FFFFFF;
+  /* — Paleta de Colores —
+     Estos son los colores que se ven en toda la web.
+     NOTA: Varios colores apuntan al mismo valor (ej: --verde = --naranja).
+     Esto fue intencional para simplificar la paleta a rojo/dorado/blanco.
+     Si la diseñadora quiere diferenciarlos, se cambian los valores hex aquí.
+  */
+  --rojo: #BE003C;          /* Color principal — navbar, badges, hover de botones */
+  --naranja: #FA9A3E;       /* Acentos cálidos — bordes, badges secundarios */
+  --amarillo: #EFC600;      /* Botones primarios, logo, highlights */
+  --verde: #FA9A3E;         /* Actualmente = naranja (no se usa diferenciado) */
+  --turquesa: #EFC600;      /* Actualmente = amarillo (no se usa diferenciado) */
+  --dorado: #EFC600;        /* Sombras decorativas de las cards */
+  --crema: #FFFFFF;         /* Fondo de la página (podría ser un crema #FFF8E7) */
+  --oscuro: #BE003C;        /* Color de texto principal = rojo corporativo */
+  --sombra: rgba(190, 0, 60, 0.16); /* Sombras suaves con tinte rojo */
+  --purpura: #BE003C;       /* Actualmente = rojo (para el loader) */
+  --rojo-oscuro: #93002c;   /* Hover más oscuro del rojo */
+  --color-acento: rgba(190, 0, 60, 0.18); /* Bordes y acentos sutiles */
+  --cian: #EFC600;          /* Actualmente = amarillo (outline de focus) */
+  --amarillo-e: #EFC600;    /* Amarillo para sección "20 años" */
+  --morado-o: #BE003C;      /* Actualmente = rojo (headers de secciones) */
+  --beige-c: #FFFFFF;       /* Actualmente = blanco */
+  --blanco: #FFFFFF;        /* Blanco puro */
 
-  --radius-sm: 8px;
-  --radius-md: 10px;
-  --radius-lg: 12px;
-  --radius-xl: 14px;
-  --radius-pill: 9999px;
+  /* — Bordes Redondeados —
+     Controlan qué tan redondeadas son las esquinas de los elementos.
+     pill = completamente redondeado (como una pastilla), se usa en botones.
+  */
+  --radius-sm: 8px;         /* Bordes sutiles — inputs, tags pequeños */
+  --radius-md: 10px;        /* Bordes medios — cards, dropdowns */
+  --radius-lg: 12px;        /* Bordes grandes — cards destacadas */
+  --radius-xl: 14px;        /* Bordes extra grandes */
+  --radius-pill: 9999px;    /* Completamente redondeado — botones, badges */
 
-  --shadow-sm: 0 4px 14px rgba(190, 0, 60, 0.12);
-  --shadow-md: 0 6px 20px rgba(190, 0, 60, 0.14);
-  --shadow-lg: 0 14px 36px rgba(190, 0, 60, 0.2);
+  /* — Sombras —
+     Dan profundidad a las cards y elementos flotantes.
+     Tienen un tinte rosa/rojo sutil que combina con la marca.
+  */
+  --shadow-sm: 0 4px 14px rgba(190, 0, 60, 0.12);   /* Cards normales */
+  --shadow-md: 0 6px 20px rgba(190, 0, 60, 0.14);   /* Cards en hover */
+  --shadow-lg: 0 14px 36px rgba(190, 0, 60, 0.2);    /* Elementos destacados */
 
-  --transition-fast: 0.2s;
-  --transition-md: 0.25s;
-  --transition-slow: 0.3s;
+  /* — Velocidades de Transición/Animación —
+     Controlan qué tan rápido se animan los hovers y efectos.
+  */
+  --transition-fast: 0.2s;   /* Hovers rápidos (links, botones) */
+  --transition-md: 0.25s;    /* Transiciones normales */
+  --transition-slow: 0.3s;   /* Transiciones lentas (cards, modales) */
 
-  --container-sm: 700px;
-  --container-md: 1100px;
-  --container-lg: 1200px;
+  /* — Anchos Máximos de Contenido —
+     Controlan el ancho máximo que tiene el contenido en pantalla.
+     El contenido se centra automáticamente con margin: 0 auto.
+  */
+  --container-sm: 700px;    /* Contenido angosto (formularios, detalles) */
+  --container-md: 1100px;   /* Contenido normal (grids de cards) */
+  --container-lg: 1200px;   /* Contenido ancho (repositorio) */
 }
 
+/* ── Accesibilidad: Movimiento Reducido ──
+   Si el usuario tiene configurado en su SO "reducir movimiento",
+   desactivamos TODAS las animaciones y transiciones.
+   Esto es obligatorio para accesibilidad web (WCAG).
+*/
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -50,97 +104,136 @@
   }
 }
 
+/* ── Reset Global ──
+   Elimina márgenes y paddings por defecto del navegador.
+   box-sizing: border-box hace que padding no aumente el tamaño total.
+   Esto evita sorpresas al diseñar.
+*/
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* Scroll suave al hacer click en links con # (anclas) */
 html {
   scroll-behavior: smooth;
 }
 
+/* ── Estilos Base del Body ──
+   Fuente, color de texto y fondo por defecto de toda la página.
+   Si la diseñadora quiere cambiar el fondo general, se cambia --crema.
+*/
 body {
-  min-height: 100dvh;
-  overflow-x: hidden;
+  min-height: 100dvh;         /* Mínimo 100% de la altura de la ventana */
+  overflow-x: hidden;         /* Evita scroll horizontal */
   font-family: var(--font-texto);
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--oscuro);
-  background: var(--crema);
+  font-size: 16px;            /* Tamaño base del texto */
+  line-height: 1.6;           /* Espaciado entre líneas (legibilidad) */
+  color: var(--oscuro);       /* Color de texto por defecto */
+  background: var(--crema);   /* Fondo de toda la página */
 }
 
+/* ── Textura de Ruido ──
+   Capa sutil de textura sobre toda la página que da un efecto "artesanal".
+   Es casi invisible (opacity 0.5 + el SVG tiene opacity 0.04 interno).
+   Para quitarla: borrar todo este bloque body::before.
+*/
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 9999;
-  pointer-events: none;
+  pointer-events: none;       /* No bloquea clicks */
   opacity: 0.5;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
 }
 
+/* ── Resets de Elementos HTML ──
+   Normalizan el comportamiento de imágenes, botones, links, etc.
+   para que se comporten de forma predecible en todos los navegadores.
+*/
 img, picture, video, canvas, svg {
   display: block;
-  max-width: 100%;
+  max-width: 100%;           /* Las imágenes nunca desbordan su contenedor */
   height: auto;
 }
 
 input, button, textarea, select {
-  font: inherit;
+  font: inherit;              /* Heredan la fuente del padre, no la del navegador */
   color: inherit;
 }
 
 button {
-  cursor: pointer;
+  cursor: pointer;            /* Muestra la manito al pasar el mouse */
   background: none;
   border: 0;
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
+  color: inherit;             /* Los links heredan el color del texto */
+  text-decoration: none;      /* Sin subrayado por defecto */
 }
 
 ul, ol {
-  list-style: none;
+  list-style: none;           /* Sin viñetas/números en listas */
 }
 
+/* Los títulos tienen interlineado compacto y texto balanceado */
 h1, h2, h3, h4, h5, h6 {
   line-height: 1.15;
-  text-wrap: balance;
+  text-wrap: balance;         /* El navegador distribuye mejor las líneas */
 }
 
+/* Texto de párrafo con wrapping "bonito" (evita palabras sueltas al final) */
 p, li, figcaption {
   text-wrap: pretty;
 }
 
+/* ── Selección de Texto ──
+   Cuando el usuario selecciona texto con el mouse, se ve con fondo dorado.
+   La diseñadora puede cambiar el color de selección aquí.
+*/
 ::selection {
-  background: rgba(239, 198, 0, 0.25);
+  background: rgba(239, 198, 0, 0.25);  /* Fondo dorado semi-transparente */
   color: var(--oscuro);
 }
 
+/* ── Focus Visible ──
+   Borde que aparece al navegar con Tab (accesibilidad).
+   Se ve como un outline dorado alrededor del elemento enfocado.
+*/
 :focus-visible {
   outline: 2px solid var(--cian);
   outline-offset: 3px;
   border-radius: var(--radius-sm);
 }
 
+/* ── Contenedores ──
+   Clases utilitarias para centrar contenido con un ancho máximo.
+   Se usan en las páginas para que el contenido no se estire en pantallas grandes.
+   Ejemplo de uso: <div className="container">...</div>
+*/
 .container {
   width: 100%;
-  max-width: var(--container-md);
-  margin: 0 auto;
-  padding: 0 1rem;
+  max-width: var(--container-md);  /* 1100px por defecto */
+  margin: 0 auto;                  /* Centra horizontalmente */
+  padding: 0 1rem;                 /* Margen interno lateral */
 }
 
 .container-sm {
-  max-width: var(--container-sm);
+  max-width: var(--container-sm);  /* 700px — formularios, detalles */
 }
 
 .container-lg {
-  max-width: var(--container-lg);
+  max-width: var(--container-lg);  /* 1200px — grids grandes */
 }
 
+/* ── Screen Reader Only ──
+   Oculta visualmente pero sigue disponible para lectores de pantalla.
+   Se usa para textos accesibles que no deben verse en pantalla.
+   Ejemplo: <span className="sr-only">Abrir menú</span>
+*/
 .sr-only {
   position: absolute;
   width: 1px;
@@ -153,6 +246,14 @@ p, li, figcaption {
   border: 0;
 }
 
+/* ── Animación Reveal (Aparecer al hacer scroll) ──
+   Los elementos con clase "reveal" empiezan invisibles y desplazados 30px abajo.
+   Cuando entran en pantalla (controlado por useReveal.js), se les agrega
+   la clase "visible" y aparecen suavemente.
+   
+   Para usarlo en un JSX: <div className="reveal">contenido</div>
+   Y en la página: useReveal() en el componente padre.
+*/
 .reveal {
   opacity: 0;
   transform: translateY(30px);
@@ -164,7 +265,14 @@ p, li, figcaption {
   transform: none;
 }
 
-/* ── Botones Globales ── */
+/* ══════════════════════════════════════════════
+   BOTONES GLOBALES
+   Se usan en toda la app. Para usarlos en JSX:
+   <a className="btn btn-primary">Texto</a>
+   <button className="btn btn-secondary">Texto</button>
+   ══════════════════════════════════════════════ */
+
+/* Base de todos los botones */
 .btn {
   display: inline-block;
   padding: 0.8rem 1.8rem;
@@ -173,7 +281,7 @@ p, li, figcaption {
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-pill);   /* Completamente redondeado */
   text-decoration: none;
   cursor: pointer;
   transition: all var(--transition-md);
@@ -181,11 +289,13 @@ p, li, figcaption {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
+/* Al pasar el mouse, el botón "sube" un poco */
 .btn:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
 }
 
+/* Botón Primario: fondo amarillo → en hover cambia a rojo */
 .btn-primary {
   background: var(--amarillo);
   color: var(--oscuro);
@@ -197,6 +307,7 @@ p, li, figcaption {
   border-color: var(--rojo);
 }
 
+/* Botón Secundario: transparente con borde blanco (se usa sobre fondos oscuros) */
 .btn-secondary {
   background: transparent;
   color: var(--blanco);
@@ -206,4 +317,57 @@ p, li, figcaption {
 .btn-secondary:hover {
   background: var(--blanco);
   color: var(--rojo);
+}
+
+/* ══════════════════════════════════════════════
+   PAGE LOADER
+   Pantalla de carga que se muestra mientras se descarga una página.
+   Se ve como "🥁 Cargando..." centrado en la pantalla.
+   Estilos: global.css → Componente: definido inline en App.jsx
+   ══════════════════════════════════════════════ */
+.page-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  font-family: var(--font-titulo);
+  font-size: 2rem;
+  letter-spacing: 3px;
+  color: var(--purpura);
+}
+
+/* ══════════════════════════════════════════════
+   PÁGINA 404 (NO ENCONTRADA)
+   Se muestra cuando el usuario visita una URL que no existe.
+   Se ve como un emoji 🎭 + "Página no encontrada" + botón para volver.
+   Componente: definido inline en App.jsx
+   ══════════════════════════════════════════════ */
+.not-found {
+  text-align: center;
+  padding: 6rem 2rem;
+}
+
+.not-found-emoji {
+  font-size: 5rem;
+}
+
+.not-found h1 {
+  font-family: var(--font-titulo);
+  font-size: 3rem;
+  letter-spacing: 3px;
+}
+
+.not-found p {
+  color: var(--oscuro);
+  margin: 1rem 0 2rem;
+}
+
+/* ── Link Reset ──
+   Clase utilitaria que quita el estilo de link (sin color ni subrayado).
+   Se usa cuando un componente entero es clickeable pero no debe verse como link.
+   Ejemplo: <Link className="link-reset">contenido</Link>
+*/
+.link-reset {
+  text-decoration: none;
+  color: inherit;
 }

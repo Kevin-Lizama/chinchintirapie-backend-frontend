@@ -39,8 +39,6 @@ export const FOOTER_LINKS = {
   ],
   contacto: [
     { label: 'chinchintirapie@gmail.com', to: '/contacto' },
-    { label: 'Tienda', to: '/tienda' },
-    { label: 'Donaciones', to: '/tienda#donaciones' },
     { label: 'Únete a la escuela', to: '/contacto' },
   ],
 };

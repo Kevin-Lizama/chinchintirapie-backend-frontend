@@ -23,7 +23,7 @@ function AdminForm({ tipo }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(`${tipo} enviado:`, form);
+        // TODO: Conectar con el servicio del backend
     };
 
     return (

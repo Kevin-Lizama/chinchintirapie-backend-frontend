@@ -1,76 +1,123 @@
-import React from 'react';
+/*
+ * ============================================================
+ * MEDIATHUMBNAIL.JSX — Miniatura Inteligente de Archivos
+ * ============================================================
+ * Componente que recibe una URL y automáticamente muestra
+ * la miniatura correcta según el tipo de archivo:
+ *
+ *   1. thumbnailUrl → Si hay miniatura personalizada, la usa directamente
+ *   2. Sin URL      → Muestra emoji de placeholder (fondo degradado rojo/naranja)
+ *   3. YouTube      → Extrae el ID del video y usa la miniatura de YouTube
+ *   4. PDF/Drive    → Muestra ícono 📄 DOC
+ *   5. Video (.mp4) → Muestra ícono 🎬 Video
+ *   6. Imagen       → Muestra la imagen directa, con fallback si falla
+ *
+ * Se usa en: MultimediaCard, CedocCard, Home.jsx, Repositorio.jsx,
+ *            Cronicas.jsx, CEDOC.jsx, MaterialEducativo.jsx
+ *
+ * ESTILOS: MediaThumbnail.css → .media-thumbnail-*
+ *
+ * PROPS:
+ *   url         → URL del archivo original
+ *   thumbnailUrl → URL de miniatura personalizada (tiene prioridad sobre url)
+ *   alt         → Texto alternativo para accesibilidad
+ *   typeEmoji   → Emoji a mostrar si no hay contenido (default: 📂)
+ * ============================================================
+ */
+
+import '../styles/MediaThumbnail.css';
 
 export default function MediaThumbnail({ url, thumbnailUrl, alt, typeEmoji = '📂' }) {
+
+  /* ── Caso 1: Hay miniatura personalizada (thumbnailUrl) ──
+     La usa directamente. Si la imagen falla (404, CORS, etc.),
+     muestra el placeholder con el emoji.
+  */
   if (thumbnailUrl) {
     return (
       <img 
         src={thumbnailUrl} 
         alt={alt} 
-        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+        className="media-thumbnail-img"
         onError={(e) => {
+          // Si la miniatura falla, reemplaza con placeholder
           e.target.style.display = 'none';
           if (e.target.parentNode) {
-            e.target.parentNode.innerHTML = `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--rojo), var(--naranja)); font-size: 3rem;">${typeEmoji}</div>`;
+            e.target.parentNode.innerHTML = `<div class="media-thumbnail-placeholder">${typeEmoji}</div>`;
           }
         }}
       />
     );
   }
 
+  /* ── Caso 2: No hay URL → Placeholder con emoji ──
+     Fondo degradado rojo-naranja con emoji grande centrado.
+  */
   if (!url) {
     return (
-      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, var(--rojo), var(--naranja))', fontSize: '3rem' }}>
+      <div className="media-thumbnail-placeholder">
         {typeEmoji}
       </div>
     );
   }
 
-  // 1. YouTube Thumbnail
+  /* ── Caso 3: URL de YouTube → Miniatura automática ──
+     Extrae el ID del video de cualquier formato de URL de YouTube
+     y usa la API de miniaturas de YouTube.
+  */
   const getYouTubeId = (url) => {
     if (!url.includes('youtube.com') && !url.includes('youtu.be')) return null;
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
     const match = url.match(regExp);
     return match && match[2].length === 11 ? match[2] : null;
   };
 
   const youtubeId = getYouTubeId(url);
   if (youtubeId) {
-    const thumbnailUrl = `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
-    return <img src={thumbnailUrl} alt={alt} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />;
+    const ytThumb = `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
+    return <img src={ytThumb} alt={alt} className="media-thumbnail-img" />;
   }
 
-  // 2. PDF / Google Drive / Document Icon
+  /* ── Caso 4: PDF o Google Drive → Ícono de documento ──
+     Muestra 📄 DOC en fondo gris claro.
+  */
   const isDocument = url.toLowerCase().includes('.pdf') || url.includes('drive.google.com');
   if (isDocument) {
     return (
-      <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f5f5f5', color: '#d32f2f' }}>
-        <span style={{ fontSize: '3rem' }}>📄</span>
-        <span style={{ fontSize: '1rem', fontWeight: 'bold', marginTop: '0.5rem' }}>DOC</span>
+      <div className="media-thumbnail-doc">
+        <span className="media-thumbnail-doc-icon">📄</span>
+        <span className="media-thumbnail-doc-label">DOC</span>
       </div>
     );
   }
 
-  // 3. MP4 / Video File Icon (since playing 50 videos in a list kills performance)
+  /* ── Caso 5: Archivo de video (.mp4, .webm, .ogg) → Ícono de video ──
+     No reproduce el video (sería pesado en un listado).
+     Muestra 🎬 Video en fondo oscuro.
+  */
   const isVideo = url.match(/\.(mp4|webm|ogg)(\?.*)?$/i);
   if (isVideo) {
     return (
-      <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#222', color: '#fff' }}>
-        <span style={{ fontSize: '3rem' }}>🎬</span>
-        <span style={{ fontSize: '1rem', marginTop: '0.5rem' }}>Video</span>
+      <div className="media-thumbnail-video">
+        <span className="media-thumbnail-video-icon">🎬</span>
+        <span className="media-thumbnail-video-label">Video</span>
       </div>
     );
   }
 
-  // 4. Default to standard Image, but catch broken images
+  /* ── Caso 6: Imagen normal (fallback) ──
+     Intenta cargar la URL como imagen. Si falla (403, 404, CORS),
+     reemplaza con el placeholder de emoji.
+  */
   return (
     <img 
       src={url} 
       alt={alt} 
-      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+      className="media-thumbnail-img"
       onError={(e) => {
         // Fallback si la imagen está rota o bloqueada (Ej. Error 403 Forbidden)
         e.target.style.display = 'none';
-        e.target.parentNode.innerHTML = `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--rojo), var(--naranja)); font-size: 3rem;">${typeEmoji}</div>`;
+        e.target.parentNode.innerHTML = `<div class="media-thumbnail-placeholder">${typeEmoji}</div>`;
       }}
     />
   );

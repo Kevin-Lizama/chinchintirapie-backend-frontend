@@ -55,7 +55,7 @@ function AdminList({ tipo }) {
                     <div className="user-actions">
                         <button
                             className="btn btn-primary"
-                            onClick={() => console.log("Editar", item.id)}>
+                            onClick={() => { /* TODO: Implementar edición */ }}>
                             Editar
                         </button>
 

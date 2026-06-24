@@ -1,3 +1,31 @@
+/*
+ * ============================================================
+ * NOTICIAS.CSS — Estilos del Listado de Noticias + Cards Compartidas
+ * ============================================================
+ * Página: Noticias.jsx
+ * Componentes que REUTILIZAN estos estilos:
+ *   - ArticuloCard.jsx (cards de noticias/crónicas)
+ *   - MultimediaCard.jsx (cards de multimedia)
+ *   - Home.jsx (cards en la sección "Lo que hace vibrar")
+ *
+ * ESTRUCTURA DE LA PÁGINA NOTICIAS:
+ *   .noticias-header     → Header con título y filtros
+ *   .noticias-carousel   → Carrusel de imágenes/videos destacados
+ *   .noticias-grid       → Grid de cards de noticias
+ *
+ * CARDS REUTILIZABLES (las usan ArticuloCard y MultimediaCard):
+ *   .noticias-card       → Card completa (esquinas redondeadas, sombra)
+ *   .noticias-card-media → Zona de imagen/thumbnail (200px alto)
+ *   .noticias-card-body  → Zona de texto (tag, título, desc, botón)
+ *   .noticias-card-tag   → Badge rojo con el tipo (NOTICIA, CRONICA)
+ * ============================================================
+ */
+
+/* ══════════════════════════════════════════════
+   HEADER DE NOTICIAS
+   Barra superior con título y filtro dropdown.
+   Fondo oscuro con borde dorado abajo.
+   ══════════════════════════════════════════════ */
 .noticias-header {
   background: var(--morado-o);
   padding: 3rem 2rem 2rem;
@@ -6,19 +34,24 @@
   align-items: flex-end;
   flex-wrap: wrap;
   gap: 1rem;
-  border-bottom: 4px solid var(--cian);
+  border-bottom: 4px solid var(--cian);   /* Línea dorada */
 }
+
+/* Título "Noticias" — grande, amarillo */
 .noticias-header h1 {
   font-family: var(--font-titulo);
-  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-size: clamp(2rem, 5vw, 3.5rem);   /* Responsive: se adapta al ancho */
   color: var(--amarillo-e);
   letter-spacing: 3px;
   line-height: 1;
 }
+
 .noticias-header p {
   color: rgba(255, 255, 255, 0.7);
   margin-top: 0.4rem;
 }
+
+/* Selector/filtro de categorías */
 .noticias-filter {
   padding: 0.6rem 1.2rem;
   border-radius: 8px;
@@ -30,22 +63,31 @@
   font-size: 0.9rem;
   cursor: pointer;
 }
+
+/* ══════════════════════════════════════════════
+   CARRUSEL DE NOTICIAS DESTACADAS
+   Galería de imágenes/videos que se desliza horizontalmente.
+   ══════════════════════════════════════════════ */
 .noticias-carousel {
   position: relative;
   max-height: 400px;
   overflow: hidden;
 }
+
+/* Track que contiene todos los slides (se mueve con transform) */
 .carousel-track {
   display: flex;
   transition: transform 0.8s ease-in-out;
   width: 100%;
 }
 
+/* Cada slide ocupa el 100% del ancho */
 .carousel-slide {
   min-width: 100%;
   height: 400px;
   position: relative;
 }
+
 .carousel-slide img,
 .carousel-slide video {
   width: 100%;
@@ -53,6 +95,8 @@
   object-fit: cover;
   display: block;
 }
+
+/* Overlay oscuro con gradiente de abajo hacia arriba (para texto legible) */
 .noticias-carousel-overlay {
   position: absolute;
   inset: 0;
@@ -61,12 +105,15 @@
   align-items: flex-end;
   padding: 2rem;
 }
+
 .noticias-carousel-overlay h2 {
   font-family: var(--font-titulo);
   font-size: 2rem;
   color: #fff;
   letter-spacing: 2px;
 }
+
+/* Botones ◀ ▶ del carrusel — circulares, semi-transparentes */
 .noticias-carousel-button {
   position: absolute;
   top: 50%;
@@ -80,16 +127,25 @@
   cursor: pointer;
   font-size: 1.2rem;
 }
+
 .noticias-carousel-button.left {
   left: 1rem;
 }
+
 .noticias-carousel-button.right {
   right: 1rem;
 }
+
+/* ══════════════════════════════════════════════
+   GRID DE CARDS
+   Contenedor que organiza las cards en columnas responsivas.
+   ══════════════════════════════════════════════ */
 .noticias-grid {
   padding: 4rem 2rem;
   background: var(--crema);
 }
+
+/* Grid responsivo: min 280px por card, se ajustan automáticamente */
 .noticias-grid-inner {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -97,6 +153,23 @@
   max-width: 1200px;
   margin: 0 auto;
 }
+
+/* ══════════════════════════════════════════════
+   CARD REUTILIZABLE (.noticias-card)
+   Usada por: ArticuloCard.jsx, MultimediaCard.jsx, Home.jsx
+   
+   Estructura:
+     .noticias-card           → Contenedor (border-radius, sombra, hover)
+     ├── .noticias-card-media → Zona de imagen (200px alto)
+     │   └── img              → Imagen que llena el contenedor
+     └── .noticias-card-body  → Zona de texto
+         ├── .noticias-card-tag → Badge rojo (NOTICIA, CRONICA, etc.)
+         ├── h3                → Título
+         ├── p                 → Descripción
+         └── button            → Botón "Leer más" / "Ver contenido"
+   ══════════════════════════════════════════════ */
+
+/* Card completa — esquinas redondeadas, sombra suave, sube al hover */
 .noticias-card {
   border-radius: 16px;
   overflow: hidden;
@@ -105,22 +178,37 @@
   transition: transform 0.3s;
   position: relative;
 }
+
+/* Hover: la card sube 4px */
 .noticias-card:hover {
   transform: translateY(-4px);
 }
+
+/* Zona de imagen — altura fija 200px */
 .noticias-card-media {
   width: 100%;
   height: 200px;
   object-fit: cover;
   display: block;
 }
+
+/* La imagen dentro de la zona de media — llena todo el espacio */
+.noticias-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Zona de texto debajo de la imagen */
 .noticias-card-body {
   padding: 1.2rem;
 }
+
+/* Badge/tag rojo — muestra el tipo (NOTICIA, CRONICA, REPOSITORIO, etc.) */
 .noticias-card-tag {
   background: var(--rojo);
   color: #fff;
-  border-radius: 20px;
+  border-radius: 20px;                /* Completamente redondeado */
   padding: 0.2rem 0.7rem;
   font-size: 0.72rem;
   font-weight: 800;
@@ -129,18 +217,24 @@
   display: inline-block;
   margin-bottom: 0.5rem;
 }
+
+/* Título de la card */
 .noticias-card h3 {
   font-family: var(--font-titulo);
   font-size: 1.2rem;
   color: var(--oscuro);
   margin-bottom: 0.3rem;
 }
+
+/* Descripción de la card */
 .noticias-card p {
   color: var(--oscuro);
   font-size: 0.88rem;
   line-height: 1.5;
   margin-bottom: 0.8rem;
 }
+
+/* Botón "Leer más" / "Ver contenido" — ancho completo, fondo oscuro */
 .noticias-card button {
   background: var(--morado-o);
   color: var(--amarillo-e);
@@ -151,5 +245,5 @@
   font-weight: 800;
   cursor: pointer;
   font-size: 0.85rem;
-  width: 100%;
+  width: 100%;                        /* Ocupa todo el ancho disponible */
 }

@@ -1,3 +1,32 @@
+/*
+ * ============================================================
+ * NAVBAR.CSS — Estilos de la Barra de Navegación
+ * ============================================================
+ * Componente: Navbar.jsx
+ * Aparece en todas las páginas excepto login/password.
+ *
+ * ESTRUCTURA:
+ *   .navbar              → Contenedor principal (sticky, fondo oscuro)
+ *   ├── .logo-wrap       → Logo + texto "Chinchintirapié"
+ *   │   ├── .logo-img    → Contenedor circular del logo (gira!)
+ *   │   └── .logo-text   → Nombre + subtítulo
+ *   ├── .hamburger       → Botón ☰ (solo visible en móvil)
+ *   └── .nav-links       → Lista de links de navegación
+ *       ├── li > a       → Link normal
+ *       ├── .has-dropdown → Link con submenú
+ *       │   └── .dropdown → Menú desplegable
+ *       ├── .nav-cta     → Botón "Tienda/Donaciones" (resaltado rojo)
+ *       ├── .nav-login-btn → Botón "Ingresar" (borde naranja)
+ *       └── .nav-user-btn → Botón del usuario logueado
+ *           └── .user-dropdown → Dropdown con perfil/admin/salir
+ * ============================================================
+ */
+
+/* ── Contenedor Principal ──
+   sticky: se queda fijo arriba al hacer scroll.
+   z-index 1000: siempre está por encima de todo el contenido.
+   Fondo oscuro (--oscuro = rojo corporativo) con sombra rojiza.
+*/
 .navbar {
   position: sticky;
   top: 0;
@@ -12,6 +41,9 @@
   box-shadow: 0 4px 20px rgba(190,0,60,.4);
 }
 
+/* ── Logo (izquierda) ──
+   Contenedor flex que agrupa la imagen circular + el texto.
+*/
 .logo-wrap {
   display: flex;
   align-items: center;
@@ -20,30 +52,36 @@
   min-width: 0;
 }
 
+/* Contenedor circular del logo — GIRA con animación spin (14 segundos por vuelta) */
 .logo-img {
   width: 62px;
   height: 62px;
   border-radius: 50%;
-  border: 3px solid var(--amarillo);
-  animation: spin 14s linear infinite;
+  border: 3px solid var(--amarillo);     /* Borde dorado alrededor del logo */
+  animation: spin 14s linear infinite;    /* Rotación continua */
   overflow: hidden;
   flex-shrink: 0;
   background: #ffffff;
 }
 
+/* La imagen dentro del logo — contain = no se corta, se ajusta */
 .logo-img img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 50%;
+  margin: 1%;
 }
 
+/* Animación de rotación para el logo */
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
+/* ── Texto del Logo ── */
 .logo-text { line-height: 1; }
 
+/* "Chinchintirapié" — fuente de título, color amarillo con sombra roja */
 .logo-text .logo-name {
   display: block;
   font-family: var(--font-titulo);
@@ -53,6 +91,7 @@
   text-shadow: 2px 2px 0 var(--rojo);
 }
 
+/* "Escuela Carnavalera" — subtítulo pequeño en naranja */
 .logo-text .logo-sub {
   display: block;
   font-size: .68rem;
@@ -62,6 +101,10 @@
   color: var(--naranja);
 }
 
+/* ── Lista de Links de Navegación ──
+   En desktop: fila horizontal con gap pequeño.
+   En móvil: se oculta y se muestra como lista vertical.
+*/
 .nav-links {
   display: flex;
   align-items: center;
@@ -70,8 +113,13 @@
   flex-wrap: wrap;
 }
 
+/* Cada li tiene position:relative para que los dropdowns se posicionen relativo a él */
 .nav-links > li { position: relative; }
 
+/* ── Estilo Base de Links y Botones del Navbar ──
+   Todos los links y botones del menú comparten este estilo base:
+   texto blanco, uppercase, fuente pequeña, borde redondeado.
+*/
 .nav-links > li > a,
 .nav-links > li > button {
   display: flex;
@@ -92,17 +140,20 @@
   transition: background .2s, color .2s;
 }
 
+/* Hover: fondo rojo, texto amarillo */
 .nav-links > li > a:hover,
 .nav-links > li > button:hover {
   background: var(--rojo);
   color: var(--amarillo);
 }
 
+/* Link activo (la página actual): texto amarillo con fondo semi-transparente */
 .nav-links > li > a.active-link {
   color: var(--amarillo);
   background: rgba(239,198,0,.12);
 }
 
+/* Flecha ▾ que indica dropdown — gira 180° cuando está abierto */
 .caret {
   font-size: .7rem;
   transition: transform .25s;
@@ -110,30 +161,37 @@
 
 .has-dropdown.open .caret { transform: rotate(180deg); }
 
-/* Dropdown */
+/* ══════════════════════════════════════════════
+   DROPDOWN — Menú Desplegable
+   Aparece debajo del link que lo activa.
+   Se anima con opacity + translateY (aparece de arriba hacia abajo).
+   pointer-events:none cuando está cerrado = no clickeable.
+   ══════════════════════════════════════════════ */
 .dropdown {
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
   min-width: 180px;
   background: var(--oscuro);
-  border: 2px solid var(--amarillo);
+  border: 2px solid var(--amarillo);    /* Borde dorado */
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 8px 30px rgba(190,0,60,.4);
-  opacity: 0;
+  opacity: 0;                           /* Invisible por defecto */
   transform: translateY(-8px) scaleY(.96);
   transform-origin: top;
-  pointer-events: none;
+  pointer-events: none;                 /* No clickeable cuando oculto */
   transition: opacity .25s, transform .25s;
 }
 
+/* Dropdown abierto: visible y clickeable */
 .has-dropdown.open .dropdown {
   opacity: 1;
   transform: translateY(0) scaleY(1);
   pointer-events: auto;
 }
 
+/* Links dentro del dropdown */
 .dropdown a {
   display: block;
   padding: .65rem 1.1rem;
@@ -142,28 +200,37 @@
   color: var(--blanco);
   text-decoration: none;
   transition: background .18s, padding-left .18s;
-  border-left: 3px solid transparent;
+  border-left: 3px solid transparent;   /* Se colorea en hover */
 }
 
+/* Hover en dropdown: fondo dorado semi-transparente + borde izquierdo amarillo */
 .dropdown a:hover {
   background: rgba(239,198,0,.12);
   border-left-color: var(--amarillo);
-  padding-left: 1.5rem;
+  padding-left: 1.5rem;                /* Se desplaza un poco a la derecha */
   color: var(--amarillo);
 }
 
-/* ── User dropdown: compact layout ── */
+/* ══════════════════════════════════════════════
+   USER DROPDOWN — Dropdown del Usuario Logueado
+   Se abre al hacer click en "👤 NOMBRE ▾"
+   Posicionado a la derecha (right:0) para no salirse de la pantalla.
+   ══════════════════════════════════════════════ */
 .dropdown.user-dropdown {
   display: flex;
   flex-direction: column;
   gap: 0;
   padding: .35rem 0;
+  right: 0;
+  left: auto;                          /* Alineado a la derecha */
+  min-width: 160px;
 }
 
 .dropdown.user-dropdown a {
   padding: .45rem 1rem;
 }
 
+/* Etiqueta de rol (Admin/Cliente) — solo decorativa */
 .dropdown.user-dropdown .user-dropdown-role {
   display: block;
   padding: .3rem 1rem;
@@ -175,6 +242,27 @@
   border-left: 3px solid transparent;
 }
 
+/* ── Botón del Usuario Logueado ── */
+.nav-user-btn {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .5rem .85rem;
+}
+
+/* Nombre del usuario — se trunca si es muy largo (max 160px) */
+.nav-user-name {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ══════════════════════════════════════════════
+   BOTONES ESPECIALES DEL NAVBAR
+   ══════════════════════════════════════════════ */
+
+/* Botón CTA "Tienda / Donaciones" — resaltado con fondo rojo */
 .nav-cta {
   background: var(--rojo) !important;
   border-radius: 8px !important;
@@ -186,19 +274,25 @@
   color: var(--blanco) !important;
 }
 
+/* Botón "Ingresar" — borde naranja, sin fondo */
 .nav-login-btn {
   border: 2px solid var(--naranja) !important;
   border-radius: 8px !important;
   color: var(--naranja) !important;
 }
 
+/* Hover: fondo naranja sólido */
 .nav-login-btn:hover {
   background: var(--naranja) !important;
   color: var(--oscuro) !important;
 }
 
+/* ══════════════════════════════════════════════
+   HAMBURGUESA — Botón de menú móvil
+   Solo visible en pantallas < 900px.
+   ══════════════════════════════════════════════ */
 .hamburger {
-  display: none;
+  display: none;                        /* Oculto en desktop */
   background: none;
   border: 2px solid var(--amarillo);
   border-radius: 6px;
@@ -208,12 +302,20 @@
   font-size: 1.3rem;
 }
 
+/* ══════════════════════════════════════════════
+   RESPONSIVE — Adaptaciones para móvil (< 900px)
+   - El logo se hace más pequeño
+   - Los links se ocultan y se muestran como lista vertical
+   - La hamburguesa se hace visible
+   - Los dropdowns pasan de absolutos a estáticos (inline)
+   ══════════════════════════════════════════════ */
 @media (max-width: 900px) {
   .navbar {
     padding: .75rem 1rem;
     justify-content: space-between;
   }
 
+  /* Logo más pequeño en móvil */
   .logo-img {
     width: 48px;
     height: 48px;
@@ -228,8 +330,10 @@
     letter-spacing: 2px;
   }
 
+  /* Mostrar hamburguesa */
   .hamburger { display: block; }
 
+  /* Links: ocultos por defecto, se muestran como lista vertical */
   .nav-links {
     display: none;
     flex-direction: column;
@@ -245,8 +349,10 @@
     align-items: stretch;
   }
 
+  /* Clase que se agrega cuando el menú está abierto */
   .nav-links.mobile-open { display: flex; }
 
+  /* Dropdowns en móvil: no flotan, se insertan inline */
   .dropdown {
     position: static;
     border: none;
@@ -261,6 +367,7 @@
 
   .has-dropdown.open .dropdown { display: block; }
 
+  /* Links ocupan todo el ancho en móvil */
   .nav-links > li > a,
   .nav-links > li > button {
     width: 100%;

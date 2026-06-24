@@ -37,6 +37,11 @@
   display: block;
 }
 
+.cronica-card-media--has-content {
+  padding: 0;
+  overflow: hidden;
+}
+
 .cronica-card-body {
   padding: 1.2rem;
 }

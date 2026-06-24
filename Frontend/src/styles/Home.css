@@ -769,3 +769,23 @@
   .home-vibrar-hero { min-height: 260px; }
   .home-vibrar-hero-overlay h3 { font-size: 1.3rem; }
 }
+
+/* ── Home utility classes ── */
+.home-subsection-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.talleres-action {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.talleres-section .section-header h2 span {
+  color: var(--morado-o);
+}
+
+.años-badge-ring text {
+  font-family: var(--font-titulo);
+  fill: var(--amarillo-e);
+}

@@ -34,6 +34,12 @@
   font-size: 3.5rem;
 }
 
+.edu-card-top--has-content {
+  padding: 0;
+  overflow: hidden;
+  background: transparent;
+}
+
 .edu-card-body {
   padding: 1.2rem;
 }

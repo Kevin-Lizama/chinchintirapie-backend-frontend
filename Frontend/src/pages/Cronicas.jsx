@@ -39,7 +39,7 @@ export default function Cronicas() {
           {!loading && !error && cronicas.length === 0 && <p>No hay crónicas disponibles.</p>}
           {!loading && !error && cronicas.map((c) => (
             <article key={c.id} className="cronica-card reveal">
-              <div className="cronica-card-media" style={c.urlPhoto ? { padding: 0, overflow: 'hidden' } : {}}>
+              <div className={`cronica-card-media${c.urlPhoto ? ' cronica-card-media--has-content' : ''}`}>
                 <MediaThumbnail url={c.urlPhoto} alt={c.title} typeEmoji="📰" />
               </div>
               <div className="cronica-card-body">

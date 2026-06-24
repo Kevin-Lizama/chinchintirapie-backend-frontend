@@ -95,9 +95,9 @@ export default function Repositorio() {
         </div>
       </div>
       <section className="repositorio-section">
-        {loading && <p style={{textAlign: 'center'}}>Cargando repositorio...</p>}
-        {error && <p className="error" style={{textAlign: 'center'}}>{error}</p>}
-        {!loading && !error && filtered.length === 0 && <p style={{textAlign: 'center'}}>No hay archivos disponibles.</p>}
+        {loading && <p className="status-msg-center">Cargando repositorio...</p>}
+        {error && <p className="error status-msg-center">{error}</p>}
+        {!loading && !error && filtered.length === 0 && <p className="status-msg-center">No hay archivos disponibles.</p>}
         
         {!loading && !error && sortedYears.map(year => (
           <div key={year} className="repo-year-group">
@@ -105,8 +105,8 @@ export default function Repositorio() {
             <div className="media-grid repositorio-media-grid">
               {groupedByYear[year].map((item) => (
                 <Link to={`/repositorio/${item.id}`} key={item.id} className="repositorio-link-reset">
-                  <div className="media-card reveal">
-                    <div className="media-thumb" style={item.url ? { padding: 0, overflow: 'hidden', background: 'transparent' } : {}}>
+                  <div className={`media-card reveal`}>
+                    <div className={`media-thumb${item.url ? ' media-thumb--has-content' : ''}`}>
                       <MediaThumbnail url={item.url} thumbnailUrl={item.thumbnailUrl} alt={item.title} typeEmoji="📂" />
                     </div>
                     <div className="media-info">

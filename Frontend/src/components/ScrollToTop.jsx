@@ -1,9 +1,24 @@
+/*
+ * ============================================================
+ * SCROLLTOTOP.JSX — Botón "Volver Arriba"
+ * ============================================================
+ * Botón flotante con flecha ↑ que aparece cuando el usuario
+ * ha scrolleado más de 300px hacia abajo.
+ * Al hacer click, hace scroll suave hasta el inicio de la página.
+ *
+ * Se usa en: App.jsx (aparece en todas las páginas)
+ *
+ * ESTILOS: ScrollToTop.css
+ * ============================================================
+ */
+
 import { useState, useEffect } from 'react';
 import '../styles/ScrollToTop.css';
 
 export default function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
 
+  // Escuchar scroll: mostrar botón cuando scrollY > 300px
   useEffect(() => {
     const toggleVisibility = () => {
       if (window.scrollY > 300) {
@@ -17,6 +32,7 @@ export default function ScrollToTop() {
     return () => window.removeEventListener('scroll', toggleVisibility);
   }, []);
 
+  // Al hacer click: scroll suave hasta arriba
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -31,6 +47,7 @@ export default function ScrollToTop() {
       onClick={scrollToTop}
       aria-label="Volver arriba"
     >
+      {/* Ícono SVG de flecha hacia arriba */}
       <svg
         viewBox="0 0 24 24"
         width="24"
