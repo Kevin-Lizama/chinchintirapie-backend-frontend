@@ -261,16 +261,17 @@ export default function Login() {
             <GoogleOAuthProvider clientId={clientId}>
               <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <GoogleLogin
-                  onSuccess={onGoogleSuccess}
+                  onSuccess={(credentialResponse) => onGoogleSuccess(credentialResponse, tab)}
                   onError={onGoogleError}
                   theme="outline"
                   size="large"
-                  text="signin_with"
+                  text={tab === 'login' ? 'signin_with' : 'signup_with'}
                   shape="rectangular"
                   width="100%"
                   useOneTap={false}
                   auto_select={false}
                   itp_support={false}
+                  prompt="select_account" 
                 />
               </div>
             </GoogleOAuthProvider>
